@@ -1,0 +1,9 @@
+node_modules/
+vendor/
+target/
+__pycache__/
+.venv/
+*.pyc
+dist/
+.gradle/
+Cargo.target/

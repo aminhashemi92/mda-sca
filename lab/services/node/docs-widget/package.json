@@ -1,0 +1,10 @@
+{
+  "name": "lab-docs-widget",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Documentation widget on patched releases.",
+  "dependencies": {
+    "faker": "5.5.3",
+    "ua-parser-js": "1.0.37"
+  }
+}

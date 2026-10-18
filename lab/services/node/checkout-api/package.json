@@ -1,0 +1,19 @@
+{
+  "name": "lab-checkout-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Checkout HTTP API. Static fixture; do not install or run.",
+  "dependencies": {
+    "axios": "0.21.0",
+    "chalk": "4.1.2",
+    "colors": "1.4.0",
+    "debug": "4.3.4",
+    "ejs": "3.1.6",
+    "event-stream": "4.0.1",
+    "express": "4.17.1",
+    "jsonwebtoken": "8.5.1",
+    "moment": "2.29.1",
+    "node-fetch": "2.6.6",
+    "parser-lib": "npm:ua-parser-js@0.7.29"
+  }
+}

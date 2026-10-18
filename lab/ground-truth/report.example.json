@@ -1,0 +1,11 @@
+{
+  "findings": [
+    {
+      "ecosystem": "npm",
+      "name": "lodash",
+      "version": "4.17.15",
+      "detector": "sca",
+      "purl": "pkg:npm/lodash@4.17.15"
+    }
+  ]
+}

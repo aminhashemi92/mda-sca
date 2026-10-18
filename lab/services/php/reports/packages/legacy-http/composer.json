@@ -1,0 +1,14 @@
+{
+  "name": "lab/legacy-http",
+  "description": "Older HTTP helpers used only by the report exporter.",
+  "require": {
+    "php": ">=7.4",
+    "phpmailer/phpmailer": "6.4.1",
+    "symfony/http-foundation": "5.2.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Lab\\LegacyHttp\\": "src/"
+    }
+  }
+}

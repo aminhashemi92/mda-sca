@@ -1,0 +1,9 @@
+{
+  "name": "lab-marketing-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Marketing renderer. Same package name as checkout, different version.",
+  "dependencies": {
+    "ua-parser-js": "1.0.2"
+  }
+}

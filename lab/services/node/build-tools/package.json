@@ -1,0 +1,25 @@
+{
+  "name": "lab-build-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Repository build helper. Dev scope hides part of the graph.",
+  "dependencies": {
+    "ansi-regex": "3.0.0",
+    "async": "2.6.3",
+    "cross-env": "7.0.3",
+    "glob-parent": "5.1.1",
+    "hosted-git-info": "2.8.8",
+    "minimatch": "3.0.4",
+    "netmask": "1.0.6",
+    "nth-check": "2.0.0",
+    "shell-quote": "1.7.2",
+    "yargs": "15.4.1"
+  },
+  "devDependencies": {
+    "coa": "2.0.3",
+    "crossenv": "1.0.1",
+    "eslint-config-eslint": "5.0.2",
+    "node-ipc": "9.2.2",
+    "rc": "1.2.9"
+  }
+}

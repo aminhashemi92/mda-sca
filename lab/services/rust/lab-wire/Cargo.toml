@@ -1,0 +1,10 @@
+[package]
+name = "lab-wire"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+h2 = "=0.3.15"
+rustdecimal = "=0.1.0"
+time = "=0.1.43"

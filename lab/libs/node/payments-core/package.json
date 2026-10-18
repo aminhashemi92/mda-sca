@@ -1,0 +1,9 @@
+{
+  "name": "@lab/payments-core",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Payment stream helpers. The range below resolves past the last clean 3.3.x release.",
+  "dependencies": {
+    "event-stream": "~3.3.4"
+  }
+}

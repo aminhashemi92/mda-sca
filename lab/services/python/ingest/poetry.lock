@@ -1,0 +1,158 @@
+# Curated lock for the lab graph. It is not a Poetry-generated hash lock.
+
+[[package]]
+name = "aiohttp"
+version = "3.8.1"
+description = "Async HTTP client/server"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "colorama"
+version = "0.4.6"
+description = "Cross-platform colored terminal text"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "cryptography"
+version = "3.3.2"
+description = "cryptography recipes and primitives"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "ctx"
+version = "0.2.6"
+description = "Context helper"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "django"
+version = "2.2.16"
+description = "Django web framework"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "flask"
+version = "1.1.2"
+description = "Flask web framework"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+jinja2 = ">=2.10.1"
+werkzeug = ">=0.15"
+
+[[package]]
+name = "gitpython"
+version = "3.1.17"
+description = "Git library"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "idna"
+version = "2.10"
+description = "Internationalized Domain Names"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "jinja2"
+version = "2.11.2"
+description = "Template engine"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "lab-vision"
+version = "0.1.0"
+description = "Receipt image helper"
+category = "main"
+optional = false
+python-versions = "*"
+develop = true
+
+[package.dependencies]
+ultralytics = "8.3.41"
+
+[package.source]
+type = "directory"
+url = "../libs/lab-vision"
+
+[[package]]
+name = "lxml"
+version = "4.6.3"
+description = "XML and HTML toolkit"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "pillow"
+version = "8.1.1"
+description = "Imaging library"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "pyyaml"
+version = "5.3.1"
+description = "YAML parser"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "requests"
+version = "2.25.1"
+description = "Python HTTP for Humans."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+idna = ">=2.5,<3"
+urllib3 = ">=1.21.1,<1.27"
+
+[[package]]
+name = "ultralytics"
+version = "8.3.41"
+description = "Model helper pulled only by lab-vision"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "urllib3"
+version = "1.25.11"
+description = "HTTP library"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "werkzeug"
+version = "1.0.1"
+description = "WSGI toolkit"
+category = "main"
+optional = false
+python-versions = "*"
+
+[metadata]
+lock-version = "1.1"
+python-versions = "*"
+content-hash = "lab-fixture-not-a-registry-lock"

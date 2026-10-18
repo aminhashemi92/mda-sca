@@ -1,0 +1,22 @@
+{
+  "name": "lab/reports",
+  "description": "Report export. Static fixture; do not install.",
+  "require": {
+    "php": ">=7.4",
+    "dompdf/dompdf": "1.0.2",
+    "guzzlehttp/guzzle": "6.5.5",
+    "lab/legacy-http": "*",
+    "league/flysystem": "1.1.3"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "packages/legacy-http"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Lab\\Reports\\": "src/"
+    }
+  }
+}

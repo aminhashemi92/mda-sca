@@ -1,0 +1,5512 @@
+{
+  "schema_version": "1.0",
+  "lab": "northwind-supply-chain-lab",
+  "sbom": {
+    "cyclonedx": "sbom/lab.cdx.json",
+    "spdx": "sbom/lab.spdx.json",
+    "tool": "syft 1.54.1"
+  },
+  "scoring": {
+    "match": "ecosystem + name + version, or purl",
+    "mda_expected": "findings whose detectors include mda",
+    "sca_expected": "findings whose detectors include sca",
+    "do_not_flag": "reporting any of these is a false positive",
+    "supplemental": "optional historical package with no OSV id at authoring time",
+    "report_shape": {
+      "findings": [
+        {
+          "ecosystem": "npm",
+          "name": "lodash",
+          "version": "4.17.15",
+          "detector": "sca"
+        }
+      ]
+    }
+  },
+  "counts": {
+    "malicious": 17,
+    "vulnerable": 76,
+    "do_not_flag": 28,
+    "supplemental": 1
+  },
+  "notes": [
+    "قفل‌ها گزیده هستند: وابستگی‌های بی‌خطر و خارج از آزمون حذف شده‌اند تا هر بسته شخص ثالث در SBOM تکلیف مشخص داشته باشد.",
+    "نصب یا اجرای این آزمایشگاه ممنوع است. مختصات آلوده فقط در مانیفست، قفل و کد ارجاع شده‌اند و بایت بدافزار داخل مخزن نیست.",
+    "Syft 1.54 ورودی‌های package-lock را که فیلد dev=true دارند حذف می‌کند. scope توسعه در package.json مانده و در قفل این پرچم عمداً نیست تا بسته در SBOM بماند.",
+    "شناسههای advisory در تاریخ ساخت از OSV خوانده شده‌اند. تعداد رکورد OSV ممکن است بعداً بیشتر شود."
+  ],
+  "findings": [
+    {
+      "id": "GT-MAL-001",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "npm",
+      "name": "flatmap-stream",
+      "version": "0.1.1",
+      "purl": "pkg:npm/flatmap-stream@0.1.1",
+      "depth": 3,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "event-stream@3.3.6"
+      ],
+      "dependency_path": [
+        "lab-billing-worker",
+        "@lab/payments-core",
+        "event-stream@3.3.6",
+        "flatmap-stream@0.1.1"
+      ],
+      "manifests": [
+        "libs/node/payments-core/package.json",
+        "libs/node/payments-core/package-lock.json",
+        "services/node/billing-worker/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "libs/node/payments-core/src/index.js",
+          "needle": "require(\"flatmap-stream\")",
+          "line": 2
+        }
+      ],
+      "note": "بدافزار واقعی در لایه سوم است؛ سرویس billing فقط payments-core را می‌بیند.",
+      "challenges": [
+        "transitive",
+        "nested-lock"
+      ],
+      "osv_record_count": 3,
+      "advisory_ids": [
+        "GHSA-9x64-5r7x-2q53",
+        "GHSA-mh6f-8j2x-4483",
+        "MAL-2025-20690"
+      ]
+    },
+    {
+      "id": "GT-MAL-002",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "npm",
+      "name": "event-stream",
+      "version": "3.3.6",
+      "purl": "pkg:npm/event-stream@3.3.6",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "@lab/payments-core@1.0.0"
+      ],
+      "dependency_path": [
+        "lab-billing-worker",
+        "@lab/payments-core",
+        "event-stream@3.3.6"
+      ],
+      "manifests": [
+        "libs/node/payments-core/package.json",
+        "libs/node/payments-core/package-lock.json",
+        "services/node/billing-worker/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "libs/node/payments-core/src/index.js",
+          "needle": "require(\"event-stream\")",
+          "line": 1
+        }
+      ],
+      "note": "package.json بازه ~3.3.4 دارد و قفل روی نسخه آلوده 3.3.6 نشسته. نسخه 4.0.1 در checkout سالم است.",
+      "challenges": [
+        "version-range",
+        "decoy-version",
+        "workspace-transitive"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "GHSA-mh6f-8j2x-4483"
+      ]
+    },
+    {
+      "id": "GT-MAL-003",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "npm",
+      "name": "eslint-scope",
+      "version": "3.7.2",
+      "purl": "pkg:npm/eslint-scope@3.7.2",
+      "depth": 2,
+      "scope": "dev",
+      "relationship": "dev-transitive",
+      "introduced_by": [
+        "eslint-config-eslint@5.0.2"
+      ],
+      "dependency_path": [
+        "lab-build-tools",
+        "eslint-config-eslint@5.0.2",
+        "eslint-scope@3.7.2"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json",
+        "services/node/build-tools/.eslintrc.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/dev-hooks.js",
+          "needle": "require(\"eslint-scope\")",
+          "line": 4
+        }
+      ],
+      "note": "در devDependencies نیست؛ از eslint-config-eslint که خودش هم آلوده است وارد شده.",
+      "challenges": [
+        "dev-scope",
+        "transitive"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "GHSA-hxxf-q3w9-4xgw"
+      ]
+    },
+    {
+      "id": "GT-MAL-004",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "npm",
+      "name": "eslint-config-eslint",
+      "version": "5.0.2",
+      "purl": "pkg:npm/eslint-config-eslint@5.0.2",
+      "depth": 1,
+      "scope": "dev",
+      "relationship": "dev-direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "eslint-config-eslint@5.0.2"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json",
+        "services/node/build-tools/.eslintrc.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/.eslintrc.json",
+          "needle": "eslint-config-eslint",
+          "line": 3
+        }
+      ],
+      "note": "وابستگی توسعه است و فقط از extends در eslintrc استفاده شده.",
+      "challenges": [
+        "dev-scope"
+      ],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "GHSA-hxxf-q3w9-4xgw",
+        "GHSA-pv55-r6j3-wp94"
+      ]
+    },
+    {
+      "id": "GT-MAL-005",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "npm",
+      "name": "ua-parser-js",
+      "version": "0.7.29",
+      "purl": "pkg:npm/ua-parser-js@0.7.29",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "alias",
+      "introduced_by": [
+        "parser-lib"
+      ],
+      "dependency_path": [
+        "lab-checkout-api",
+        "parser-lib",
+        "ua-parser-js@0.7.29"
+      ],
+      "manifests": [
+        "services/node/checkout-api/package.json",
+        "services/node/checkout-api/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/checkout-api/src/server.js",
+          "needle": "require(\"parser-lib\")",
+          "line": 9
+        }
+      ],
+      "note": "در package.json با نام مستعار parser-lib آمده. نسخه‌های 1.0.2 و 1.0.37 همین نام را در سرویس‌های دیگر دارند.",
+      "challenges": [
+        "alias",
+        "multi-version"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2021-4229",
+        "GHSA-pjwm-rvh2-c87w"
+      ]
+    },
+    {
+      "id": "GT-MAL-006",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "npm",
+      "name": "coa",
+      "version": "2.0.3",
+      "purl": "pkg:npm/coa@2.0.3",
+      "depth": 1,
+      "scope": "dev",
+      "relationship": "dev-direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "coa@2.0.3"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/dev-hooks.js",
+          "needle": "require(\"coa\")",
+          "line": 1
+        }
+      ],
+      "note": "نسخه ربوده‌شده در ابزار ساخت، نه در وابستگی اجرایی سرویس.",
+      "challenges": [
+        "dev-scope"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "GHSA-73qr-pfmq-6rp8"
+      ]
+    },
+    {
+      "id": "GT-MAL-007",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "npm",
+      "name": "rc",
+      "version": "1.2.9",
+      "purl": "pkg:npm/rc@1.2.9",
+      "depth": 1,
+      "scope": "dev",
+      "relationship": "dev-direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "rc@1.2.9"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/dev-hooks.js",
+          "needle": "require(\"rc\")",
+          "line": 2
+        }
+      ],
+      "note": "هم‌خانواده حادثه coa، فقط در devDependencies.",
+      "challenges": [
+        "dev-scope"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "GHSA-g2q5-5433-rhrf"
+      ]
+    },
+    {
+      "id": "GT-MAL-008",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "npm",
+      "name": "node-ipc",
+      "version": "10.1.2",
+      "purl": "pkg:npm/node-ipc@10.1.2",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-billing-worker",
+        "node-ipc@10.1.2"
+      ],
+      "manifests": [
+        "services/node/billing-worker/package.json",
+        "services/node/billing-worker/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/billing-worker/src/worker.js",
+          "needle": "require(\"node-ipc\")",
+          "line": 5
+        }
+      ],
+      "note": "نسخه دارای کد مخرب مستقیم. نسخه 9.2.2 جداگانه در build-tools است.",
+      "challenges": [
+        "multi-version"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2022-23812",
+        "GHSA-97m3-w2cp-4xx6"
+      ]
+    },
+    {
+      "id": "GT-MAL-009",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "npm",
+      "name": "node-ipc",
+      "version": "9.2.2",
+      "purl": "pkg:npm/node-ipc@9.2.2",
+      "depth": 1,
+      "scope": "dev",
+      "relationship": "dev-direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "node-ipc@9.2.2"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/dev-hooks.js",
+          "needle": "require(\"node-ipc\")",
+          "line": 5
+        }
+      ],
+      "note": "نسخه دارای رفتار پنهان که peacenotwar را به عنوان وابستگی داخلی می‌کشد.",
+      "challenges": [
+        "dev-scope",
+        "multi-version",
+        "inner-layer"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "GHSA-8gr3-2gjw-jj7g"
+      ]
+    },
+    {
+      "id": "GT-MAL-010",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "npm",
+      "name": "colors",
+      "version": "1.4.1",
+      "purl": "pkg:npm/colors@1.4.1",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "@lab/cli-theme@1.0.0"
+      ],
+      "dependency_path": [
+        "lab-billing-worker",
+        "@lab/cli-theme",
+        "colors@1.4.1"
+      ],
+      "manifests": [
+        "libs/node/cli-theme/package.json",
+        "libs/node/cli-theme/package-lock.json",
+        "services/node/billing-worker/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "libs/node/cli-theme/src/index.js",
+          "needle": "require(\"colors\")",
+          "line": 1
+        }
+      ],
+      "note": "بازه ~1.4.0 در cli-theme به 1.4.1 حل شده. checkout همان نام را روی 1.4.0 سالم سنجاق کرده.",
+      "challenges": [
+        "version-range",
+        "decoy-version",
+        "workspace-transitive"
+      ],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2021-23567",
+        "GHSA-5rqg-jm4f-cqx7",
+        "GHSA-gh88-3pxp-6fm8"
+      ]
+    },
+    {
+      "id": "GT-MAL-011",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "npm",
+      "name": "faker",
+      "version": "6.6.6",
+      "purl": "pkg:npm/faker@6.6.6",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-catalog-seed",
+        "faker@6.6.6"
+      ],
+      "manifests": [
+        "services/node/catalog-seed/package.json",
+        "services/node/catalog-seed/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/catalog-seed/src/seed.js",
+          "needle": "require(\"faker\")",
+          "line": 1
+        }
+      ],
+      "note": "نسخه خراب‌شده. docs-widget از faker سالم 5.5.3 استفاده می‌کند.",
+      "challenges": [
+        "decoy-version"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "GHSA-5w9c-rv96-fr7g"
+      ]
+    },
+    {
+      "id": "GT-MAL-012",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "npm",
+      "name": "crossenv",
+      "version": "1.0.1",
+      "purl": "pkg:npm/crossenv@1.0.1",
+      "depth": 1,
+      "scope": "dev",
+      "relationship": "dev-direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "crossenv@1.0.1"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/dev-hooks.js",
+          "needle": "require(\"crossenv\")",
+          "line": 3
+        }
+      ],
+      "note": "تایپواسکوات cross-env. بسته سالم cross-env نسخه 7.0.3 کنار آن در dependencies است.",
+      "challenges": [
+        "typosquat",
+        "dev-scope",
+        "decoy-name"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2017-16074",
+        "GHSA-c2m4-w5hm-vqjw"
+      ]
+    },
+    {
+      "id": "GT-MAL-013",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "pypi",
+      "name": "ctx",
+      "version": "0.2.6",
+      "purl": "pkg:pypi/ctx@0.2.6",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ingest",
+        "ctx@0.2.6"
+      ],
+      "manifests": [
+        "services/python/ingest/pyproject.toml",
+        "services/python/ingest/poetry.lock",
+        "services/python/ingest/requirements.txt"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "from ctx import ctx",
+          "line": 7
+        }
+      ],
+      "note": "نسخه ربوده‌شده یک بسته قدیمی و کم‌سروصدا.",
+      "challenges": [
+        "direct"
+      ],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "GHSA-67r3-h899-9w95",
+        "GSD-2022-1002521",
+        "PYSEC-2022-199"
+      ]
+    },
+    {
+      "id": "GT-MAL-014",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "pypi",
+      "name": "ultralytics",
+      "version": "8.3.41",
+      "purl": "pkg:pypi/ultralytics@8.3.41",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "lab-vision@0.1.0"
+      ],
+      "dependency_path": [
+        "lab-ingest",
+        "lab-vision@0.1.0",
+        "ultralytics@8.3.41"
+      ],
+      "manifests": [
+        "services/python/libs/lab-vision/pyproject.toml",
+        "services/python/ingest/poetry.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/python/libs/lab-vision/lab_vision/inspect.py",
+          "needle": "from ultralytics import YOLO",
+          "line": 1
+        }
+      ],
+      "note": "در requirements.txt سرویس ingest نیست؛ فقط وابستگی کتابخانه داخلی lab-vision است.",
+      "challenges": [
+        "workspace-transitive",
+        "hidden-from-requirements"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "PYSEC-2024-154"
+      ]
+    },
+    {
+      "id": "GT-MAL-015",
+      "kind": "malicious",
+      "detectors": [
+        "mda",
+        "sca"
+      ],
+      "ecosystem": "gem",
+      "name": "rest-client",
+      "version": "1.6.13",
+      "purl": "pkg:gem/rest-client@1.6.13",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "legacy-import",
+        "rest-client@1.6.13"
+      ],
+      "manifests": [
+        "services/ruby/legacy-import/Gemfile",
+        "services/ruby/legacy-import/Gemfile.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/ruby/legacy-import/import.rb",
+          "needle": "require \"rest-client\"",
+          "line": 1
+        }
+      ],
+      "note": "نسخه بکدور CVE-2019-15224. علاوه بر بدافزار، آسیب‌پذیری‌های قدیمی‌تر هم دارد. admin-portal نسخه سالم 2.1.0 را دارد.",
+      "challenges": [
+        "decoy-version",
+        "malware-and-cve"
+      ],
+      "osv_record_count": 3,
+      "advisory_ids": [
+        "CVE-2015-1820",
+        "CVE-2015-3448",
+        "CVE-2019-15224",
+        "GHSA-333g-rpr4-7hxq",
+        "GHSA-3fhf-6939-qg8p",
+        "GHSA-mx9f-w8qq-q5jf"
+      ]
+    },
+    {
+      "id": "GT-MAL-016",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "cargo",
+      "name": "rustdecimal",
+      "version": "0.1.0",
+      "purl": "pkg:cargo/rustdecimal@0.1.0",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "lab-wire@0.1.0"
+      ],
+      "dependency_path": [
+        "lab-ledger",
+        "lab-wire",
+        "rustdecimal@0.1.0"
+      ],
+      "manifests": [
+        "services/rust/lab-wire/Cargo.toml",
+        "services/rust/Cargo.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/rust/lab-wire/src/lib.rs",
+          "needle": "rustdecimal::",
+          "line": 10
+        }
+      ],
+      "note": "تایپواسکوات rust_decimal داخل crate داخلی lab-wire، نه در وابستگی مستقیم ledger.",
+      "challenges": [
+        "typosquat",
+        "workspace-transitive"
+      ],
+      "osv_record_count": 3,
+      "advisory_ids": [
+        "GHSA-7pwq-f4pq-78gm",
+        "MAL-2022-1",
+        "RUSTSEC-2022-0042"
+      ]
+    },
+    {
+      "id": "GT-MAL-017",
+      "kind": "malicious",
+      "detectors": [
+        "mda"
+      ],
+      "ecosystem": "golang",
+      "name": "github.com/boltdb-go/bolt",
+      "version": "v1.3.1",
+      "purl": "pkg:golang/github.com/boltdb-go/bolt@v1.3.1",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "lab.example/legacykit@v0.1.0"
+      ],
+      "dependency_path": [
+        "lab.example/gateway",
+        "lab.example/legacykit",
+        "github.com/boltdb-go/bolt@v1.3.1"
+      ],
+      "manifests": [
+        "services/go/legacykit/go.mod"
+      ],
+      "usage": [
+        {
+          "file": "services/go/legacykit/store.go",
+          "needle": "github.com/boltdb-go/bolt",
+          "line": 6
+        }
+      ],
+      "note": "مسیر ماژول جعلی کنار نام bolt رسمی. در go.mod درگاه دیده نمی‌شود.",
+      "challenges": [
+        "typosquat",
+        "workspace-transitive"
+      ],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "GO-2025-3451",
+        "MAL-2025-2545"
+      ]
+    },
+    {
+      "id": "GT-VULN-001",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "express",
+      "version": "4.17.1",
+      "purl": "pkg:npm/express@4.17.1",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-checkout-api",
+        "express@4.17.1"
+      ],
+      "manifests": [
+        "services/node/checkout-api/package.json",
+        "services/node/checkout-api/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/checkout-api/src/server.js",
+          "needle": "require(\"express\")",
+          "line": 1
+        }
+      ],
+      "note": "فریم‌ورک مستقیم checkout.",
+      "challenges": [],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2024-29041",
+        "CVE-2024-43796",
+        "GHSA-qw6h-vgh9-j6wx",
+        "GHSA-rv95-896h-c2vc"
+      ]
+    },
+    {
+      "id": "GT-VULN-002",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "qs",
+      "version": "6.7.0",
+      "purl": "pkg:npm/qs@6.7.0",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "express@4.17.1"
+      ],
+      "dependency_path": [
+        "lab-checkout-api",
+        "express@4.17.1",
+        "qs@6.7.0"
+      ],
+      "manifests": [
+        "services/node/checkout-api/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/checkout-api/src/query.js",
+          "needle": "require(\"qs\")",
+          "line": 1
+        }
+      ],
+      "note": "وابستگی قفل‌شده express، در package.json سرویس نیست.",
+      "challenges": [
+        "transitive"
+      ],
+      "osv_record_count": 4,
+      "advisory_ids": [
+        "CVE-2022-24999",
+        "CVE-2025-15284",
+        "CVE-2026-2391",
+        "CVE-2026-82417",
+        "GHSA-4mjr-xmp4-gh2g",
+        "GHSA-6rw7-vpxm-498p",
+        "GHSA-hrpp-h998-j3pp",
+        "GHSA-w7fw-mjwx-w883"
+      ]
+    },
+    {
+      "id": "GT-VULN-003",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "cookie",
+      "version": "0.4.0",
+      "purl": "pkg:npm/cookie@0.4.0",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "express@4.17.1"
+      ],
+      "dependency_path": [
+        "lab-checkout-api",
+        "express@4.17.1",
+        "cookie@0.4.0"
+      ],
+      "manifests": [
+        "services/node/checkout-api/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/checkout-api/src/query.js",
+          "needle": "require(\"cookie\")",
+          "line": 2
+        }
+      ],
+      "note": "وابستگی قفل‌شده express.",
+      "challenges": [
+        "transitive"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2024-47764",
+        "GHSA-pxg6-pf52-xh8x"
+      ]
+    },
+    {
+      "id": "GT-VULN-004",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "path-to-regexp",
+      "version": "0.1.7",
+      "purl": "pkg:npm/path-to-regexp@0.1.7",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "express@4.17.1"
+      ],
+      "dependency_path": [
+        "lab-checkout-api",
+        "express@4.17.1",
+        "path-to-regexp@0.1.7"
+      ],
+      "manifests": [
+        "services/node/checkout-api/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/checkout-api/src/query.js",
+          "needle": "require(\"path-to-regexp\")",
+          "line": 3
+        }
+      ],
+      "note": "وابستگی قفل‌شده express.",
+      "challenges": [
+        "transitive"
+      ],
+      "osv_record_count": 3,
+      "advisory_ids": [
+        "CVE-2024-45296",
+        "CVE-2024-52798",
+        "CVE-2026-4867",
+        "GHSA-37ch-88jc-xwx2",
+        "GHSA-9wv6-86v2-598j",
+        "GHSA-rhx6-c78j-4q9w"
+      ]
+    },
+    {
+      "id": "GT-VULN-005",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "axios",
+      "version": "0.21.0",
+      "purl": "pkg:npm/axios@0.21.0",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-checkout-api",
+        "axios@0.21.0"
+      ],
+      "manifests": [
+        "services/node/checkout-api/package.json",
+        "services/node/checkout-api/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/checkout-api/src/upstream.js",
+          "needle": "require(\"axios\")",
+          "line": 1
+        }
+      ],
+      "note": "کلاینت بالادستی checkout.",
+      "challenges": [],
+      "osv_record_count": 25,
+      "advisory_ids": [
+        "CVE-2020-28168",
+        "CVE-2021-3749",
+        "CVE-2023-45857",
+        "CVE-2025-27152",
+        "CVE-2025-62718",
+        "CVE-2026-25639",
+        "CVE-2026-40175",
+        "CVE-2026-42033",
+        "CVE-2026-42034",
+        "CVE-2026-42035",
+        "CVE-2026-42036",
+        "CVE-2026-42038",
+        "CVE-2026-42039",
+        "CVE-2026-42040",
+        "CVE-2026-42041",
+        "CVE-2026-42042",
+        "CVE-2026-42043",
+        "CVE-2026-44486",
+        "CVE-2026-44487",
+        "CVE-2026-44490",
+        "CVE-2026-44492",
+        "CVE-2026-44495",
+        "CVE-2026-44496",
+        "CVE-2026-67316",
+        "CVE-2026-67319",
+        "GHSA-3g43-6gmg-66jw",
+        "GHSA-3p68-rc4w-qgx5",
+        "GHSA-43fc-jf86-j433",
+        "GHSA-4w2v-q235-vp99",
+        "GHSA-5c9x-8gcm-mpgx",
+        "GHSA-62hf-57xw-28j9",
+        "GHSA-6chq-wfr3-2hj9",
+        "GHSA-7q8q-rj6j-mhjq",
+        "GHSA-898c-q2cr-xwhg",
+        "GHSA-cph5-m8f7-6c5x",
+        "GHSA-fvcv-3m26-pcqx",
+        "GHSA-hfxv-24rg-xrqf",
+        "GHSA-j5f8-grm9-p9fc",
+        "GHSA-jr5f-v2jv-69x6",
+        "GHSA-m7pr-hjqh-92cm",
+        "GHSA-mmx7-hfxf-jppx",
+        "GHSA-p92q-9vqr-4j8v",
+        "GHSA-pf86-5x62-jrwf",
+        "GHSA-pjwm-pj3p-43mv",
+        "GHSA-pmwg-cvhr-8vh7",
+        "GHSA-vf2m-468p-8v99",
+        "GHSA-w9j2-pvgh-6h63",
+        "GHSA-wf5p-g6vw-rhxx",
+        "GHSA-xhjh-pmcv-23jw",
+        "GHSA-xx6v-rp6x-q39c"
+      ]
+    },
+    {
+      "id": "GT-VULN-006",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "follow-redirects",
+      "version": "1.14.7",
+      "purl": "pkg:npm/follow-redirects@1.14.7",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "axios@0.21.0"
+      ],
+      "dependency_path": [
+        "lab-checkout-api",
+        "axios@0.21.0",
+        "follow-redirects@1.14.7"
+      ],
+      "manifests": [
+        "services/node/checkout-api/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/checkout-api/src/upstream.js",
+          "needle": "require(\"follow-redirects\")",
+          "line": 3
+        }
+      ],
+      "note": "بازه ^1.10.0 در axios به 1.14.7 حل شده.",
+      "challenges": [
+        "transitive",
+        "version-range"
+      ],
+      "osv_record_count": 4,
+      "advisory_ids": [
+        "CVE-2022-0536",
+        "CVE-2023-26159",
+        "CVE-2024-28849",
+        "CVE-2026-40895",
+        "GHSA-cxjh-pqwp-8mfp",
+        "GHSA-jchw-25xp-jwwc",
+        "GHSA-pw2r-vq6v-hr8c",
+        "GHSA-r4q5-vmmm-2653"
+      ]
+    },
+    {
+      "id": "GT-VULN-007",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "jsonwebtoken",
+      "version": "8.5.1",
+      "purl": "pkg:npm/jsonwebtoken@8.5.1",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-checkout-api",
+        "jsonwebtoken@8.5.1"
+      ],
+      "manifests": [
+        "services/node/checkout-api/package.json",
+        "services/node/checkout-api/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/checkout-api/src/server.js",
+          "needle": "require(\"jsonwebtoken\")",
+          "line": 2
+        }
+      ],
+      "note": "امضای رسید سفارش.",
+      "challenges": [],
+      "osv_record_count": 3,
+      "advisory_ids": [
+        "CVE-2022-23539",
+        "CVE-2022-23540",
+        "CVE-2022-23541",
+        "GHSA-8cf7-32gw-wr33",
+        "GHSA-hjrf-2m68-5959",
+        "GHSA-qwph-4952-7xr6"
+      ]
+    },
+    {
+      "id": "GT-VULN-008",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "node-fetch",
+      "version": "2.6.6",
+      "purl": "pkg:npm/node-fetch@2.6.6",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-checkout-api",
+        "node-fetch@2.6.6"
+      ],
+      "manifests": [
+        "services/node/checkout-api/package.json",
+        "services/node/checkout-api/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/checkout-api/src/upstream.js",
+          "needle": "require(\"node-fetch\")",
+          "line": 2
+        }
+      ],
+      "note": "کلاینت دوم checkout.",
+      "challenges": [],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2022-0235",
+        "GHSA-r683-j2x4-v87g"
+      ]
+    },
+    {
+      "id": "GT-VULN-009",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "moment",
+      "version": "2.29.1",
+      "purl": "pkg:npm/moment@2.29.1",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-checkout-api",
+        "moment@2.29.1"
+      ],
+      "manifests": [
+        "services/node/checkout-api/package.json",
+        "services/node/checkout-api/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/checkout-api/src/server.js",
+          "needle": "require(\"moment\")",
+          "line": 3
+        }
+      ],
+      "note": "زمان توکن.",
+      "challenges": [],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2022-24785",
+        "CVE-2022-31129",
+        "GHSA-8hfj-j24r-96c4",
+        "GHSA-wc69-rhjr-hc9g"
+      ]
+    },
+    {
+      "id": "GT-VULN-010",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "ejs",
+      "version": "3.1.6",
+      "purl": "pkg:npm/ejs@3.1.6",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-checkout-api",
+        "ejs@3.1.6"
+      ],
+      "manifests": [
+        "services/node/checkout-api/package.json",
+        "services/node/checkout-api/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/checkout-api/src/server.js",
+          "needle": "require(\"ejs\")",
+          "line": 4
+        }
+      ],
+      "note": "قالب رسید.",
+      "challenges": [],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2022-29078",
+        "CVE-2024-33883",
+        "GHSA-ghr5-ch3p-vcr6",
+        "GHSA-phwq-j96m-2c2q"
+      ]
+    },
+    {
+      "id": "GT-VULN-011",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "ua-parser-js",
+      "version": "1.0.2",
+      "purl": "pkg:npm/ua-parser-js@1.0.2",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-marketing-site",
+        "ua-parser-js@1.0.2"
+      ],
+      "manifests": [
+        "services/node/marketing-site/package.json",
+        "services/node/marketing-site/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/marketing-site/src/audience.js",
+          "needle": "require(\"ua-parser-js\")",
+          "line": 1
+        }
+      ],
+      "note": "آسیب‌پذیری ReDoS، نه بدافزار. نباید با 0.7.29 یکی گرفته شود و 1.0.37 سالم است.",
+      "challenges": [
+        "decoy-version",
+        "not-malware"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2022-25927",
+        "GHSA-fhg7-m89q-25r3"
+      ]
+    },
+    {
+      "id": "GT-VULN-012",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "tar",
+      "version": "6.1.0",
+      "purl": "pkg:npm/tar@6.1.0",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-billing-worker",
+        "tar@6.1.0"
+      ],
+      "manifests": [
+        "services/node/billing-worker/package.json",
+        "services/node/billing-worker/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/billing-worker/src/worker.js",
+          "needle": "require(\"tar\")",
+          "line": 3
+        }
+      ],
+      "note": "خواندن آرشیو صورتحساب.",
+      "challenges": [],
+      "osv_record_count": 18,
+      "advisory_ids": [
+        "CVE-2021-32803",
+        "CVE-2021-32804",
+        "CVE-2021-37701",
+        "CVE-2021-37712",
+        "CVE-2021-37713",
+        "CVE-2024-28863",
+        "CVE-2026-23745",
+        "CVE-2026-23950",
+        "CVE-2026-24842",
+        "CVE-2026-26960",
+        "CVE-2026-29786",
+        "CVE-2026-31802",
+        "CVE-2026-53655",
+        "CVE-2026-59871",
+        "CVE-2026-59873",
+        "CVE-2026-59874",
+        "CVE-2026-59875",
+        "CVE-2026-73566",
+        "GHSA-23hp-3jrh-7fpw",
+        "GHSA-34x7-hfp2-rc4v",
+        "GHSA-3jfq-g458-7qm9",
+        "GHSA-5955-9wpr-37jh",
+        "GHSA-83g3-92jg-28cx",
+        "GHSA-8qq5-rm4j-mr97",
+        "GHSA-8x88-c5mf-7j5w",
+        "GHSA-9ppj-qmqm-q256",
+        "GHSA-9r2w-394v-53qc",
+        "GHSA-f5x3-32g6-xq36",
+        "GHSA-gvwx-54wh-qm9j",
+        "GHSA-qffp-2rhf-9h96",
+        "GHSA-qq89-hq3f-393p",
+        "GHSA-r292-9mhp-454m",
+        "GHSA-r628-mhmh-qjhw",
+        "GHSA-r6q2-hw4h-h46w",
+        "GHSA-vmf3-w455-68vh",
+        "GHSA-w8wr-v893-vjvp"
+      ]
+    },
+    {
+      "id": "GT-VULN-013",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "vm2",
+      "version": "3.9.14",
+      "purl": "pkg:npm/vm2@3.9.14",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-billing-worker",
+        "vm2@3.9.14"
+      ],
+      "manifests": [
+        "services/node/billing-worker/package.json",
+        "services/node/billing-worker/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/billing-worker/src/worker.js",
+          "needle": "require(\"vm2\")",
+          "line": 4
+        }
+      ],
+      "note": "جمع دو عدد داخل سندباکس.",
+      "challenges": [],
+      "osv_record_count": 59,
+      "advisory_ids": [
+        "CVE-2023-29017",
+        "CVE-2023-29199",
+        "CVE-2023-30547",
+        "CVE-2023-32313",
+        "CVE-2023-32314",
+        "CVE-2023-37466",
+        "CVE-2023-37903",
+        "CVE-2026-100721",
+        "CVE-2026-100722",
+        "CVE-2026-100723",
+        "CVE-2026-22709",
+        "CVE-2026-24118",
+        "CVE-2026-24120",
+        "CVE-2026-24781",
+        "CVE-2026-26332",
+        "CVE-2026-26956",
+        "CVE-2026-43997",
+        "CVE-2026-44000",
+        "CVE-2026-44001",
+        "CVE-2026-44002",
+        "CVE-2026-44003",
+        "CVE-2026-44004",
+        "CVE-2026-44005",
+        "CVE-2026-44006",
+        "CVE-2026-44007",
+        "CVE-2026-44008",
+        "CVE-2026-44009",
+        "CVE-2026-45411",
+        "CVE-2026-47131",
+        "CVE-2026-47135",
+        "CVE-2026-47137",
+        "CVE-2026-47139",
+        "CVE-2026-47140",
+        "CVE-2026-47141",
+        "CVE-2026-47208",
+        "CVE-2026-47209",
+        "CVE-2026-47210",
+        "CVE-2026-47683",
+        "CVE-2026-47686",
+        "CVE-2026-47698",
+        "CVE-2026-92933",
+        "CVE-2026-92934",
+        "CVE-2026-92942",
+        "CVE-2026-92945",
+        "CVE-2026-92946",
+        "CVE-2026-92947",
+        "CVE-2026-92948",
+        "CVE-2026-92949",
+        "CVE-2026-92950",
+        "CVE-2026-92951",
+        "CVE-2026-92955",
+        "CVE-2026-92957",
+        "CVE-2026-92958",
+        "CVE-2026-92959",
+        "CVE-2026-92960",
+        "CVE-2026-92961",
+        "CVE-2026-92962",
+        "CVE-2026-92963",
+        "CVE-2026-93605",
+        "GHSA-248r-7h7q-cr24",
+        "GHSA-2cm2-m3w5-gp2f",
+        "GHSA-2v2p-6j97-cjg9",
+        "GHSA-47x8-96vw-5wg6",
+        "GHSA-489w-w794-jq94",
+        "GHSA-55hx-c926-fr95",
+        "GHSA-5h3f-q97h-ccvc",
+        "GHSA-633r-hq9m-c4ff",
+        "GHSA-6785-pvv7-mvg7",
+        "GHSA-6j2x-vhqr-qr7q",
+        "GHSA-6rh5-qq4q-97xh",
+        "GHSA-76w7-j9cq-rx2j",
+        "GHSA-7jxr-cg7f-gpgv",
+        "GHSA-7q3f-wx44-378m",
+        "GHSA-8686-vhfx-7r3j",
+        "GHSA-88hf-g992-jg85",
+        "GHSA-8hg8-63c5-gwmx",
+        "GHSA-99p7-6v5w-7xg8",
+        "GHSA-9g8x-92q2-p28f",
+        "GHSA-9qj6-qjgg-37qq",
+        "GHSA-9vg3-4rfj-wgcm",
+        "GHSA-c48m-32m9-vx93",
+        "GHSA-c4cf-2hgv-2qv6",
+        "GHSA-cchq-frgv-rjh5",
+        "GHSA-cfcw-xp6x-25gj",
+        "GHSA-ch3r-j5x3-6q2m",
+        "GHSA-f8gf-w286-fmq2",
+        "GHSA-fcqc-726x-5wfc",
+        "GHSA-ffh4-j6h5-pg66",
+        "GHSA-g644-9gfx-q4q4",
+        "GHSA-gmc2-2x9w-cgh9",
+        "GHSA-grj5-jjm8-h35p",
+        "GHSA-hw58-p9xv-2mjh",
+        "GHSA-j3hm-6rg5-mchv",
+        "GHSA-jxxv-8r27-vm4p",
+        "GHSA-m283-3h24-438v",
+        "GHSA-m4wx-m65x-ghrr",
+        "GHSA-m5q2-4fm3-vfqp",
+        "GHSA-m5w8-4gq2-6f8x",
+        "GHSA-mpf8-4hx2-7cjg",
+        "GHSA-p5gc-c584-jj6v",
+        "GHSA-pq68-rvw4-xp4r",
+        "GHSA-q3fm-4wcw-g57x",
+        "GHSA-qcp4-v2jj-fjx8",
+        "GHSA-qhwx-74w5-xhxq",
+        "GHSA-qvjj-29qf-hp7p",
+        "GHSA-r273-hxvj-fxhp",
+        "GHSA-r4fx-v8hh-22mv",
+        "GHSA-r9pm-gxmw-wv6p",
+        "GHSA-rp36-8xq3-r6c4",
+        "GHSA-v27g-jcqj-v8rw",
+        "GHSA-v37h-5mfm-c47c",
+        "GHSA-v6mx-mf47-r5wg",
+        "GHSA-v836-6xw4-9cx3",
+        "GHSA-vwrp-x96c-mhwq",
+        "GHSA-whpj-8f3w-67p5",
+        "GHSA-wp5r-2gw5-m7q7",
+        "GHSA-x965-fc75-jpqh",
+        "GHSA-xj72-wvfv-8985"
+      ]
+    },
+    {
+      "id": "GT-VULN-014",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "tough-cookie",
+      "version": "4.0.0",
+      "purl": "pkg:npm/tough-cookie@4.0.0",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-billing-worker",
+        "tough-cookie@4.0.0"
+      ],
+      "manifests": [
+        "services/node/billing-worker/package.json",
+        "services/node/billing-worker/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/billing-worker/src/worker.js",
+          "needle": "require(\"tough-cookie\")",
+          "line": 6
+        }
+      ],
+      "note": "کوزه کوکی جلسه صورتحساب.",
+      "challenges": [],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2023-26136",
+        "GHSA-72xf-g2v4-qvf3"
+      ]
+    },
+    {
+      "id": "GT-VULN-015",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "xml2js",
+      "version": "0.4.23",
+      "purl": "pkg:npm/xml2js@0.4.23",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-billing-worker",
+        "xml2js@0.4.23"
+      ],
+      "manifests": [
+        "services/node/billing-worker/package.json",
+        "services/node/billing-worker/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/billing-worker/src/worker.js",
+          "needle": "require(\"xml2js\")",
+          "line": 7
+        }
+      ],
+      "note": "تجزیه صورت‌حساب XML.",
+      "challenges": [],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2023-0842",
+        "GHSA-776f-qx25-q3cc"
+      ]
+    },
+    {
+      "id": "GT-VULN-016",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "protobufjs",
+      "version": "6.11.3",
+      "purl": "pkg:npm/protobufjs@6.11.3",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-billing-worker",
+        "protobufjs@6.11.3"
+      ],
+      "manifests": [
+        "services/node/billing-worker/package.json",
+        "services/node/billing-worker/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/billing-worker/src/worker.js",
+          "needle": "require(\"protobufjs\")",
+          "line": 8
+        }
+      ],
+      "note": "پیام تسویه.",
+      "challenges": [],
+      "osv_record_count": 12,
+      "advisory_ids": [
+        "CVE-2023-36665",
+        "CVE-2026-41242",
+        "CVE-2026-44288",
+        "CVE-2026-44289",
+        "CVE-2026-44290",
+        "CVE-2026-44291",
+        "CVE-2026-44292",
+        "CVE-2026-44293",
+        "CVE-2026-44294",
+        "CVE-2026-45740",
+        "CVE-2026-48712",
+        "CVE-2026-54269",
+        "GHSA-2pr8-phx7-x9h3",
+        "GHSA-66ff-xgx4-vchm",
+        "GHSA-685m-2w69-288q",
+        "GHSA-75px-5xx7-5xc7",
+        "GHSA-f38q-mgvj-vph7",
+        "GHSA-fx83-v9x8-x52w",
+        "GHSA-h755-8qp9-cq85",
+        "GHSA-jggg-4jg4-v7c6",
+        "GHSA-jvwf-75h9-cwgg",
+        "GHSA-q6x5-8v7m-xcrf",
+        "GHSA-wcpc-wj8m-hjx6",
+        "GHSA-xq3m-2v4x-88gg"
+      ]
+    },
+    {
+      "id": "GT-VULN-017",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "minimist",
+      "version": "1.2.5",
+      "purl": "pkg:npm/minimist@1.2.5",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "mkdirp@0.5.5"
+      ],
+      "dependency_path": [
+        "lab-billing-worker",
+        "mkdirp@0.5.5",
+        "minimist@1.2.5"
+      ],
+      "manifests": [
+        "services/node/billing-worker/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/billing-worker/src/worker.js",
+          "needle": "require(\"minimist\")",
+          "line": 2
+        }
+      ],
+      "note": "mkdirp خودش سالم است و بازه ^1.2.5 را به نسخه آسیب‌پذیر 1.2.5 حل کرده.",
+      "challenges": [
+        "transitive",
+        "clean-parent",
+        "version-range"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2021-44906",
+        "GHSA-xvch-5gv4-984h"
+      ]
+    },
+    {
+      "id": "GT-VULN-018",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "underscore",
+      "version": "1.12.0",
+      "purl": "pkg:npm/underscore@1.12.0",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-catalog-seed",
+        "underscore@1.12.0"
+      ],
+      "manifests": [
+        "services/node/catalog-seed/package.json",
+        "services/node/catalog-seed/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/catalog-seed/src/seed.js",
+          "needle": "require(\"underscore\")",
+          "line": 2
+        }
+      ],
+      "note": "انتخاب نسخه نمونه.",
+      "challenges": [],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2021-23358",
+        "CVE-2026-27601",
+        "GHSA-cf4h-3jhx-xvhq",
+        "GHSA-qpx9-hpmf-5gmw"
+      ]
+    },
+    {
+      "id": "GT-VULN-019",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "validator",
+      "version": "13.6.0",
+      "purl": "pkg:npm/validator@13.6.0",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-catalog-seed",
+        "validator@13.6.0"
+      ],
+      "manifests": [
+        "services/node/catalog-seed/package.json",
+        "services/node/catalog-seed/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/catalog-seed/src/seed.js",
+          "needle": "require(\"validator\")",
+          "line": 3
+        }
+      ],
+      "note": "نرمال‌سازی ایمیل نمونه.",
+      "challenges": [],
+      "osv_record_count": 4,
+      "advisory_ids": [
+        "CVE-2021-3765",
+        "CVE-2025-12758",
+        "CVE-2025-56200",
+        "GHSA-9965-vmph-33xx",
+        "GHSA-qgmg-gppg-76g5",
+        "GHSA-vghf-hv5q-vc2g",
+        "GHSA-xx4c-jj58-r7x6"
+      ]
+    },
+    {
+      "id": "GT-VULN-020",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "semver",
+      "version": "7.3.5",
+      "purl": "pkg:npm/semver@7.3.5",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-catalog-seed",
+        "semver@7.3.5"
+      ],
+      "manifests": [
+        "services/node/catalog-seed/package.json",
+        "services/node/catalog-seed/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/catalog-seed/src/seed.js",
+          "needle": "require(\"semver\")",
+          "line": 4
+        }
+      ],
+      "note": "مقایسه نسخه کاتالوگ.",
+      "challenges": [],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2022-25883",
+        "GHSA-c2qf-rxjj-qqgw"
+      ]
+    },
+    {
+      "id": "GT-VULN-021",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "word-wrap",
+      "version": "1.2.3",
+      "purl": "pkg:npm/word-wrap@1.2.3",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-catalog-seed",
+        "word-wrap@1.2.3"
+      ],
+      "manifests": [
+        "services/node/catalog-seed/package.json",
+        "services/node/catalog-seed/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/catalog-seed/src/seed.js",
+          "needle": "require(\"word-wrap\")",
+          "line": 5
+        }
+      ],
+      "note": "شکستن توضیح کالا.",
+      "challenges": [],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2023-26115",
+        "GHSA-j8xg-fqg3-53r7"
+      ]
+    },
+    {
+      "id": "GT-VULN-022",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "async",
+      "version": "2.6.3",
+      "purl": "pkg:npm/async@2.6.3",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "async@2.6.3"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/toolchain.js",
+          "needle": "require(\"async\")",
+          "line": 4
+        }
+      ],
+      "note": "هم خودش آسیب‌پذیر است هم lodash قدیمی را می‌کشد.",
+      "challenges": [
+        "inner-layer"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2021-43138",
+        "GHSA-fwr7-v2mv-hh25"
+      ]
+    },
+    {
+      "id": "GT-VULN-023",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "lodash",
+      "version": "4.17.15",
+      "purl": "pkg:npm/lodash@4.17.15",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "async@2.6.3"
+      ],
+      "dependency_path": [
+        "lab-build-tools",
+        "async@2.6.3",
+        "lodash@4.17.15"
+      ],
+      "manifests": [
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/toolchain.js",
+          "needle": "require(\"lodash\")",
+          "line": 5
+        }
+      ],
+      "note": "در package.json نیست. بازه ^4.17.14 به 4.17.15 حل شده.",
+      "challenges": [
+        "transitive",
+        "version-range"
+      ],
+      "osv_record_count": 6,
+      "advisory_ids": [
+        "CVE-2020-28500",
+        "CVE-2020-8203",
+        "CVE-2021-23337",
+        "CVE-2025-13465",
+        "CVE-2026-2950",
+        "CVE-2026-4800",
+        "GHSA-29mw-wpgm-hmr9",
+        "GHSA-35jh-r3h4-6jhm",
+        "GHSA-f23m-r3pf-42rh",
+        "GHSA-p6mc-m468-83gw",
+        "GHSA-r5fr-rjxr-66jc",
+        "GHSA-xxjr-mmjv-4gpg"
+      ]
+    },
+    {
+      "id": "GT-VULN-024",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "y18n",
+      "version": "4.0.0",
+      "purl": "pkg:npm/y18n@4.0.0",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "yargs@15.4.1"
+      ],
+      "dependency_path": [
+        "lab-build-tools",
+        "yargs@15.4.1",
+        "y18n@4.0.0"
+      ],
+      "manifests": [
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/toolchain.js",
+          "needle": "require(\"y18n\")",
+          "line": 3
+        }
+      ],
+      "note": "yargs 15.4.1 سالم است و y18n آسیب‌پذیر را داخل خود دارد.",
+      "challenges": [
+        "transitive",
+        "clean-parent"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2020-7774",
+        "GHSA-c4w7-xm78-47vh"
+      ]
+    },
+    {
+      "id": "GT-VULN-025",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "hosted-git-info",
+      "version": "2.8.8",
+      "purl": "pkg:npm/hosted-git-info@2.8.8",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "hosted-git-info@2.8.8"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/toolchain.js",
+          "needle": "require(\"hosted-git-info\")",
+          "line": 6
+        }
+      ],
+      "note": "تشخیص آدرس مخزن.",
+      "challenges": [],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2021-23362",
+        "GHSA-43f8-2h32-f4cj"
+      ]
+    },
+    {
+      "id": "GT-VULN-026",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "shell-quote",
+      "version": "1.7.2",
+      "purl": "pkg:npm/shell-quote@1.7.2",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "shell-quote@1.7.2"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/toolchain.js",
+          "needle": "require(\"shell-quote\")",
+          "line": 7
+        }
+      ],
+      "note": "نقل‌قول آرگومان ساخت.",
+      "challenges": [],
+      "osv_record_count": 3,
+      "advisory_ids": [
+        "CVE-2021-42740",
+        "CVE-2026-13311",
+        "CVE-2026-9277",
+        "GHSA-395f-4hp3-45gv",
+        "GHSA-g4rg-993r-mgx7",
+        "GHSA-w7jw-789q-3m8p"
+      ]
+    },
+    {
+      "id": "GT-VULN-027",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "netmask",
+      "version": "1.0.6",
+      "purl": "pkg:npm/netmask@1.0.6",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "netmask@1.0.6"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/toolchain.js",
+          "needle": "require(\"netmask\")",
+          "line": 8
+        }
+      ],
+      "note": "بررسی شبکه آزمایشگاه.",
+      "challenges": [],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2021-28918",
+        "CVE-2021-29418",
+        "GHSA-4c7m-wxvm-r7gc",
+        "GHSA-pch5-whg9-qr2r"
+      ]
+    },
+    {
+      "id": "GT-VULN-028",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "ansi-regex",
+      "version": "3.0.0",
+      "purl": "pkg:npm/ansi-regex@3.0.0",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "ansi-regex@3.0.0"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/toolchain.js",
+          "needle": "require(\"ansi-regex\")",
+          "line": 9
+        }
+      ],
+      "note": "پاک کردن رنگ لاگ.",
+      "challenges": [],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2021-3807",
+        "GHSA-93q8-gq69-wqmw"
+      ]
+    },
+    {
+      "id": "GT-VULN-029",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "nth-check",
+      "version": "2.0.0",
+      "purl": "pkg:npm/nth-check@2.0.0",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "nth-check@2.0.0"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/toolchain.js",
+          "needle": "require(\"nth-check\")",
+          "line": 10
+        }
+      ],
+      "note": "انتخاب ردیف‌های فرد.",
+      "challenges": [],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2021-3803",
+        "GHSA-rp65-9cf3-cjxr"
+      ]
+    },
+    {
+      "id": "GT-VULN-030",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "glob-parent",
+      "version": "5.1.1",
+      "purl": "pkg:npm/glob-parent@5.1.1",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "glob-parent@5.1.1"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/toolchain.js",
+          "needle": "require(\"glob-parent\")",
+          "line": 11
+        }
+      ],
+      "note": "ریشه الگوی فایل.",
+      "challenges": [],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "BIT-gulp-2020-28469",
+        "CVE-2020-28469",
+        "GHSA-ww39-953v-wcq6"
+      ]
+    },
+    {
+      "id": "GT-VULN-031",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "npm",
+      "name": "minimatch",
+      "version": "3.0.4",
+      "purl": "pkg:npm/minimatch@3.0.4",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-build-tools",
+        "minimatch@3.0.4"
+      ],
+      "manifests": [
+        "services/node/build-tools/package.json",
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/toolchain.js",
+          "needle": "require(\"minimatch\")",
+          "line": 12
+        }
+      ],
+      "note": "تطبیق مسیر ساخت.",
+      "challenges": [],
+      "osv_record_count": 4,
+      "advisory_ids": [
+        "CVE-2022-3517",
+        "CVE-2026-26996",
+        "CVE-2026-27903",
+        "CVE-2026-27904",
+        "GHSA-23c5-xmqv-rm74",
+        "GHSA-3ppc-4f35-3m26",
+        "GHSA-7r86-cg39-jmmj",
+        "GHSA-f8q6-p94x-37v3"
+      ]
+    },
+    {
+      "id": "GT-VULN-032",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "requests",
+      "version": "2.25.1",
+      "purl": "pkg:pypi/requests@2.25.1",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ingest",
+        "requests@2.25.1"
+      ],
+      "manifests": [
+        "services/python/ingest/pyproject.toml",
+        "services/python/ingest/poetry.lock",
+        "services/python/ingest/requirements.txt"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "from requests import Session",
+          "line": 14
+        }
+      ],
+      "note": "کلاینت HTTP ingest.",
+      "challenges": [
+        "inner-layer"
+      ],
+      "osv_record_count": 8,
+      "advisory_ids": [
+        "CVE-2023-32681",
+        "CVE-2024-35195",
+        "CVE-2024-47081",
+        "CVE-2026-25645",
+        "GHSA-9hjg-9r4m-mvj7",
+        "GHSA-9wx4-h78v-vm56",
+        "GHSA-gc5v-m9x4-r6x2",
+        "GHSA-j8r2-6x86-q33q",
+        "PYSEC-2023-74",
+        "PYSEC-2026-1872",
+        "PYSEC-2026-1873",
+        "PYSEC-2026-2275"
+      ]
+    },
+    {
+      "id": "GT-VULN-033",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "urllib3",
+      "version": "1.25.11",
+      "purl": "pkg:pypi/urllib3@1.25.11",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "requests@2.25.1"
+      ],
+      "dependency_path": [
+        "lab-ingest",
+        "requests@2.25.1",
+        "urllib3@1.25.11"
+      ],
+      "manifests": [
+        "services/python/ingest/poetry.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "import urllib3",
+          "line": 17
+        }
+      ],
+      "note": "در requirements.txt نیست و قید requests را برآورده می‌کند.",
+      "challenges": [
+        "transitive",
+        "hidden-from-requirements"
+      ],
+      "osv_record_count": 20,
+      "advisory_ids": [
+        "CVE-2021-33503",
+        "CVE-2023-43804",
+        "CVE-2023-45803",
+        "CVE-2024-37891",
+        "CVE-2025-50181",
+        "CVE-2025-66418",
+        "CVE-2025-66471",
+        "CVE-2026-21441",
+        "CVE-2026-44431",
+        "CVE-2026-97689",
+        "GHSA-2xpw-w6gg-jr37",
+        "GHSA-34jh-p97f-mpxf",
+        "GHSA-38jv-5279-wg99",
+        "GHSA-g4mx-q9vg-27p4",
+        "GHSA-gm62-xv2j-4w53",
+        "GHSA-pq67-6m6q-mj2v",
+        "GHSA-q2q7-5pp4-w6pg",
+        "GHSA-qccp-gfcp-xxvc",
+        "GHSA-v845-jxx5-vc9f",
+        "GHSA-vxq7-64xx-v4gw",
+        "PYSEC-2021-108",
+        "PYSEC-2023-192",
+        "PYSEC-2023-212",
+        "PYSEC-2026-141",
+        "PYSEC-2026-1994",
+        "PYSEC-2026-1995",
+        "PYSEC-2026-1996",
+        "PYSEC-2026-1998",
+        "PYSEC-2026-1999",
+        "PYSEC-2026-4177"
+      ]
+    },
+    {
+      "id": "GT-VULN-034",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "idna",
+      "version": "2.10",
+      "purl": "pkg:pypi/idna@2.10",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "requests@2.25.1"
+      ],
+      "dependency_path": [
+        "lab-ingest",
+        "requests@2.25.1",
+        "idna@2.10"
+      ],
+      "manifests": [
+        "services/python/ingest/poetry.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "import idna",
+          "line": 16
+        }
+      ],
+      "note": "لایه داخلی requests.",
+      "challenges": [
+        "transitive",
+        "hidden-from-requirements"
+      ],
+      "osv_record_count": 4,
+      "advisory_ids": [
+        "CVE-2024-3651",
+        "CVE-2026-45409",
+        "GHSA-65pc-fj4g-8rjx",
+        "GHSA-jjg7-2v4v-x38h",
+        "PYSEC-2024-60",
+        "PYSEC-2026-215"
+      ]
+    },
+    {
+      "id": "GT-VULN-035",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "flask",
+      "version": "1.1.2",
+      "purl": "pkg:pypi/flask@1.1.2",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ingest",
+        "flask@1.1.2"
+      ],
+      "manifests": [
+        "services/python/ingest/pyproject.toml",
+        "services/python/ingest/poetry.lock",
+        "services/python/ingest/requirements.txt"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "from flask import Flask",
+          "line": 9
+        }
+      ],
+      "note": "اپ ingest. Jinja2 و Werkzeug را با خودش می‌آورد.",
+      "challenges": [
+        "inner-layer"
+      ],
+      "osv_record_count": 4,
+      "advisory_ids": [
+        "CVE-2023-30861",
+        "CVE-2026-27205",
+        "GHSA-68rp-wp8r-4726",
+        "GHSA-m2qf-hxjv-5gpq",
+        "PYSEC-2023-62",
+        "PYSEC-2026-2151"
+      ]
+    },
+    {
+      "id": "GT-VULN-036",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "werkzeug",
+      "version": "1.0.1",
+      "purl": "pkg:pypi/werkzeug@1.0.1",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "flask@1.1.2"
+      ],
+      "dependency_path": [
+        "lab-ingest",
+        "flask@1.1.2",
+        "werkzeug@1.0.1"
+      ],
+      "manifests": [
+        "services/python/ingest/poetry.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "from werkzeug.utils import secure_filename",
+          "line": 15
+        }
+      ],
+      "note": "لایه داخلی Flask.",
+      "challenges": [
+        "transitive"
+      ],
+      "osv_record_count": 18,
+      "advisory_ids": [
+        "CVE-2022-29361",
+        "CVE-2023-23934",
+        "CVE-2023-25577",
+        "CVE-2023-46136",
+        "CVE-2024-34069",
+        "CVE-2024-49766",
+        "CVE-2025-66221",
+        "CVE-2026-102598",
+        "CVE-2026-21860",
+        "CVE-2026-27199",
+        "GHSA-29vq-49wr-vm6x",
+        "GHSA-2g68-c3qc-8985",
+        "GHSA-87hc-h4r5-73f7",
+        "GHSA-f9vj-2wh5-fj8j",
+        "GHSA-g6x2-hccm-hh4m",
+        "GHSA-hgf8-39gv-g3f2",
+        "GHSA-hrfv-mqp8-q5rw",
+        "GHSA-px8h-6qxv-m22q",
+        "GHSA-xg9f-g7g7-2323",
+        "PYSEC-2022-203",
+        "PYSEC-2023-221",
+        "PYSEC-2023-57",
+        "PYSEC-2023-58",
+        "PYSEC-2026-2043",
+        "PYSEC-2026-2044",
+        "PYSEC-2026-2045",
+        "PYSEC-2026-2046",
+        "PYSEC-2026-2320",
+        "PYSEC-2026-4312"
+      ]
+    },
+    {
+      "id": "GT-VULN-037",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "jinja2",
+      "version": "2.11.2",
+      "purl": "pkg:pypi/jinja2@2.11.2",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "flask@1.1.2"
+      ],
+      "dependency_path": [
+        "lab-ingest",
+        "flask@1.1.2",
+        "jinja2@2.11.2"
+      ],
+      "manifests": [
+        "services/python/ingest/poetry.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "from jinja2 import Environment",
+          "line": 11
+        }
+      ],
+      "note": "لایه داخلی Flask.",
+      "challenges": [
+        "transitive"
+      ],
+      "osv_record_count": 10,
+      "advisory_ids": [
+        "CVE-2020-28493",
+        "CVE-2024-22195",
+        "CVE-2024-34064",
+        "CVE-2024-56326",
+        "CVE-2025-27516",
+        "GHSA-cpwx-vrp4-4pq7",
+        "GHSA-g3rq-g295-4j3m",
+        "GHSA-h5c8-rqwp-cp95",
+        "GHSA-h75v-3vvj-5mfj",
+        "GHSA-q2x7-8rv6-6q7h",
+        "PYSEC-2021-66",
+        "PYSEC-2026-1471",
+        "PYSEC-2026-1473",
+        "PYSEC-2026-1474",
+        "PYSEC-2026-1475",
+        "SNYK-PYTHON-JINJA2-1012994"
+      ]
+    },
+    {
+      "id": "GT-VULN-038",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "pyyaml",
+      "version": "5.3.1",
+      "purl": "pkg:pypi/pyyaml@5.3.1",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ingest",
+        "pyyaml@5.3.1"
+      ],
+      "manifests": [
+        "services/python/ingest/pyproject.toml",
+        "services/python/ingest/poetry.lock",
+        "services/python/ingest/requirements.txt"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "import yaml",
+          "line": 5
+        }
+      ],
+      "note": "خواندن پیکربندی محلی.",
+      "challenges": [],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2020-14343",
+        "GHSA-8q59-q68h-6hv4",
+        "PYSEC-2021-142"
+      ]
+    },
+    {
+      "id": "GT-VULN-039",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "pillow",
+      "version": "8.1.1",
+      "purl": "pkg:pypi/pillow@8.1.1",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ingest",
+        "pillow@8.1.1"
+      ],
+      "manifests": [
+        "services/python/ingest/pyproject.toml",
+        "services/python/ingest/poetry.lock",
+        "services/python/ingest/requirements.txt"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "from PIL import Image",
+          "line": 13
+        }
+      ],
+      "note": "اندازه تصویر رسید.",
+      "challenges": [],
+      "osv_record_count": 67,
+      "advisory_ids": [
+        "A-299477569",
+        "ASB-A-299477569",
+        "BIT-pillow-2021-23437",
+        "BIT-pillow-2021-25287",
+        "BIT-pillow-2021-25288",
+        "BIT-pillow-2021-25291",
+        "BIT-pillow-2021-27921",
+        "BIT-pillow-2021-27922",
+        "BIT-pillow-2021-27923",
+        "BIT-pillow-2021-28675",
+        "BIT-pillow-2021-28676",
+        "BIT-pillow-2021-28677",
+        "BIT-pillow-2021-28678",
+        "BIT-pillow-2021-34552",
+        "BIT-pillow-2022-22815",
+        "BIT-pillow-2022-22816",
+        "BIT-pillow-2022-22817",
+        "BIT-pillow-2022-24303",
+        "BIT-pillow-2022-45198",
+        "BIT-pillow-2023-44271",
+        "BIT-pillow-2023-50447",
+        "BIT-pillow-2024-28219",
+        "BIT-pillow-2026-42308",
+        "BIT-pillow-2026-42310",
+        "BIT-pillow-2026-54058",
+        "BIT-pillow-2026-54059",
+        "BIT-pillow-2026-54060",
+        "BIT-pillow-2026-55379",
+        "BIT-pillow-2026-55380",
+        "BIT-pillow-2026-55798",
+        "BIT-pillow-2026-59197",
+        "BIT-pillow-2026-59198",
+        "BIT-pillow-2026-59199",
+        "BIT-pillow-2026-59200",
+        "BIT-pillow-2026-59205",
+        "CVE-2021-23437",
+        "CVE-2021-25287",
+        "CVE-2021-25288",
+        "CVE-2021-25291",
+        "CVE-2021-27921",
+        "CVE-2021-27922",
+        "CVE-2021-27923",
+        "CVE-2021-28675",
+        "CVE-2021-28676",
+        "CVE-2021-28677",
+        "CVE-2021-28678",
+        "CVE-2021-34552",
+        "CVE-2022-22815",
+        "CVE-2022-22816",
+        "CVE-2022-22817",
+        "CVE-2022-24303",
+        "CVE-2022-45198",
+        "CVE-2023-44271",
+        "CVE-2023-4863",
+        "CVE-2023-50447",
+        "CVE-2023-5129",
+        "CVE-2024-28219",
+        "CVE-2026-42308",
+        "CVE-2026-42310",
+        "CVE-2026-54058",
+        "CVE-2026-54059",
+        "CVE-2026-54060",
+        "CVE-2026-55379",
+        "CVE-2026-55380",
+        "CVE-2026-55798",
+        "CVE-2026-59197",
+        "CVE-2026-59198",
+        "CVE-2026-59199",
+        "CVE-2026-59200",
+        "CVE-2026-59205",
+        "GHSA-3f63-hfp8-52jq",
+        "GHSA-3wvg-mj6g-m9cv",
+        "GHSA-44wm-f244-xhp3",
+        "GHSA-45hq-cxwh-f6vc",
+        "GHSA-4fx9-vc88-q2xc",
+        "GHSA-4x4j-2g7c-83w6",
+        "GHSA-5x94-69rx-g8h2",
+        "GHSA-62p4-gmf7-7g93",
+        "GHSA-6r8x-57c9-28j4",
+        "GHSA-7534-mm45-c74v",
+        "GHSA-77gc-v2xv-rvvh",
+        "GHSA-7r7m-5h27-29hp",
+        "GHSA-8ghj-p4vj-mr35",
+        "GHSA-8v84-f9pq-wr9x",
+        "GHSA-8vj2-vxx3-667w",
+        "GHSA-95q3-8gr9-gm8w",
+        "GHSA-98vv-pw6r-q6q4",
+        "GHSA-9hw9-ch79-4vh6",
+        "GHSA-9j59-75qj-795w",
+        "GHSA-f4w8-cv6p-x6r5",
+        "GHSA-fj7v-r99m-22gq",
+        "GHSA-g6rj-rv7j-xwp4",
+        "GHSA-hjfx-8p6c-g7gx",
+        "GHSA-j7hp-h8jx-5ppr",
+        "GHSA-jgpv-4h4c-xhw3",
+        "GHSA-jjj6-mw9f-p565",
+        "GHSA-m2vv-5vj5-2hm7",
+        "GHSA-mvg9-xffr-p774",
+        "GHSA-phj9-mv4w-65pm",
+        "GHSA-pw3c-h7wp-cvhx",
+        "GHSA-q5hq-fp76-qmrc",
+        "GHSA-r73j-pqj5-w3x7",
+        "GHSA-rwv7-3v45-hg29",
+        "GHSA-wjx4-4jcj-g98j",
+        "GHSA-xj96-63gp-2gmr",
+        "GHSA-xrcv-f9gm-v42c",
+        "PYSEC-2021-137",
+        "PYSEC-2021-138",
+        "PYSEC-2021-139",
+        "PYSEC-2021-317",
+        "PYSEC-2021-331",
+        "PYSEC-2021-37",
+        "PYSEC-2021-40",
+        "PYSEC-2021-41",
+        "PYSEC-2021-42",
+        "PYSEC-2021-92",
+        "PYSEC-2021-93",
+        "PYSEC-2021-94",
+        "PYSEC-2022-10",
+        "PYSEC-2022-168",
+        "PYSEC-2022-42979",
+        "PYSEC-2022-8",
+        "PYSEC-2022-9",
+        "PYSEC-2023-175",
+        "PYSEC-2023-227",
+        "PYSEC-2026-165",
+        "PYSEC-2026-1793",
+        "PYSEC-2026-1794",
+        "PYSEC-2026-2253",
+        "PYSEC-2026-2254",
+        "PYSEC-2026-2255",
+        "PYSEC-2026-2256",
+        "PYSEC-2026-2257",
+        "PYSEC-2026-2874",
+        "PYSEC-2026-3451",
+        "PYSEC-2026-3453",
+        "PYSEC-2026-3454",
+        "PYSEC-2026-3493",
+        "PYSEC-2026-3494",
+        "PYSEC-2026-3495",
+        "PYSEC-2026-457",
+        "RUSTSEC-2023-0060",
+        "RUSTSEC-2023-0061",
+        "SNYK-PYTHON-PILLOW-1319443"
+      ]
+    },
+    {
+      "id": "GT-VULN-040",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "django",
+      "version": "2.2.16",
+      "purl": "pkg:pypi/django@2.2.16",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ingest",
+        "django@2.2.16"
+      ],
+      "manifests": [
+        "services/python/ingest/pyproject.toml",
+        "services/python/ingest/poetry.lock",
+        "services/python/ingest/requirements.txt"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "from django.http import JsonResponse",
+          "line": 8
+        }
+      ],
+      "note": "پاسخ JSON health.",
+      "challenges": [],
+      "osv_record_count": 45,
+      "advisory_ids": [
+        "BIT-django-2021-28658",
+        "BIT-django-2021-31542",
+        "BIT-django-2021-32052",
+        "BIT-django-2021-3281",
+        "BIT-django-2021-33203",
+        "BIT-django-2021-33571",
+        "BIT-django-2021-44420",
+        "BIT-django-2021-45115",
+        "BIT-django-2021-45116",
+        "BIT-django-2021-45452",
+        "BIT-django-2022-22818",
+        "BIT-django-2022-23833",
+        "BIT-django-2022-28346",
+        "BIT-django-2022-28347",
+        "BIT-django-2022-36359",
+        "BIT-django-2024-45231",
+        "BIT-django-2025-48432",
+        "BIT-django-2025-57833",
+        "BIT-django-2025-64458",
+        "BIT-django-2025-64459",
+        "BIT-django-2026-15307",
+        "BIT-django-2026-15830",
+        "BIT-django-2026-48587",
+        "BIT-django-2026-48588",
+        "BIT-django-2026-53877",
+        "BIT-django-2026-53878",
+        "BIT-django-2026-6873",
+        "BIT-django-2026-8404",
+        "CVE-2021-28658",
+        "CVE-2021-31542",
+        "CVE-2021-32052",
+        "CVE-2021-3281",
+        "CVE-2021-33203",
+        "CVE-2021-33571",
+        "CVE-2021-44420",
+        "CVE-2021-45115",
+        "CVE-2021-45116",
+        "CVE-2021-45452",
+        "CVE-2022-22818",
+        "CVE-2022-23833",
+        "CVE-2022-28346",
+        "CVE-2022-28347",
+        "CVE-2022-36359",
+        "CVE-2024-45231",
+        "CVE-2025-48432",
+        "CVE-2025-57833",
+        "CVE-2025-64458",
+        "CVE-2025-64459",
+        "CVE-2026-15307",
+        "CVE-2026-15830",
+        "CVE-2026-48587",
+        "CVE-2026-48588",
+        "CVE-2026-53877",
+        "CVE-2026-53878",
+        "CVE-2026-6873",
+        "CVE-2026-8404",
+        "GHSA-2gwj-7jmv-h26r",
+        "GHSA-3h9f-r86x-qvjx",
+        "GHSA-53qw-q765-4fww",
+        "GHSA-68w8-qjq3-2gfm",
+        "GHSA-6cw3-g6wv-c2xv",
+        "GHSA-6w2r-r2m5-xq5w",
+        "GHSA-7xr5-9hcq-chf9",
+        "GHSA-8c5j-9r9f-c6w8",
+        "GHSA-8cjm-8mp7-r2xf",
+        "GHSA-8qcx-xf44-272x",
+        "GHSA-8x94-hmjh-97hq",
+        "GHSA-923m-gv2p-w5qp",
+        "GHSA-95rw-fx8r-36v6",
+        "GHSA-crhf-3pfg-w68w",
+        "GHSA-frmv-pr5f-9mcr",
+        "GHSA-fvgf-6h6h-3322",
+        "GHSA-h7pc-vwp9-298g",
+        "GHSA-jrh2-hc4r-7jwx",
+        "GHSA-p99v-5w3c-jqq9",
+        "GHSA-q238-5cxm-5c9h",
+        "GHSA-qm57-vhq3-3fwf",
+        "GHSA-qw25-v68c-qjf3",
+        "GHSA-rrqc-c2jx-6jgv",
+        "GHSA-rxjp-mfm9-w4wr",
+        "GHSA-v6rh-hp5x-86rv",
+        "GHSA-w24h-v9qh-8gxj",
+        "GHSA-wvqv-fj8w-qmhm",
+        "GHSA-xgxc-v2qg-chmh",
+        "PYSEC-2021-439",
+        "PYSEC-2021-6",
+        "PYSEC-2021-7",
+        "PYSEC-2021-8",
+        "PYSEC-2021-9",
+        "PYSEC-2021-98",
+        "PYSEC-2021-99",
+        "PYSEC-2022-1",
+        "PYSEC-2022-19",
+        "PYSEC-2022-190",
+        "PYSEC-2022-191",
+        "PYSEC-2022-2",
+        "PYSEC-2022-20",
+        "PYSEC-2022-245",
+        "PYSEC-2022-3",
+        "PYSEC-2025-105",
+        "PYSEC-2025-107",
+        "PYSEC-2025-108",
+        "PYSEC-2025-47",
+        "PYSEC-2026-1297",
+        "PYSEC-2026-198",
+        "PYSEC-2026-199",
+        "PYSEC-2026-201",
+        "PYSEC-2026-2090",
+        "PYSEC-2026-2091",
+        "PYSEC-2026-2092",
+        "PYSEC-2026-3717",
+        "PYSEC-2026-4035"
+      ]
+    },
+    {
+      "id": "GT-VULN-041",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "lxml",
+      "version": "4.6.3",
+      "purl": "pkg:pypi/lxml@4.6.3",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ingest",
+        "lxml@4.6.3"
+      ],
+      "manifests": [
+        "services/python/ingest/pyproject.toml",
+        "services/python/ingest/poetry.lock",
+        "services/python/ingest/requirements.txt"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "from lxml import etree",
+          "line": 12
+        }
+      ],
+      "note": "برچسب سفارش XML.",
+      "challenges": [],
+      "osv_record_count": 6,
+      "advisory_ids": [
+        "CVE-2021-43818",
+        "CVE-2022-2309",
+        "CVE-2026-41066",
+        "GHSA-55x5-fj6c-h6m8",
+        "GHSA-vfmq-68hx-4jfw",
+        "GHSA-wrxv-2j5q-m38w",
+        "PYSEC-2021-852",
+        "PYSEC-2022-230",
+        "PYSEC-2026-87"
+      ]
+    },
+    {
+      "id": "GT-VULN-042",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "gitpython",
+      "version": "3.1.17",
+      "purl": "pkg:pypi/gitpython@3.1.17",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ingest",
+        "gitpython@3.1.17"
+      ],
+      "manifests": [
+        "services/python/ingest/pyproject.toml",
+        "services/python/ingest/poetry.lock",
+        "services/python/ingest/requirements.txt"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "from git import Repo",
+          "line": 10
+        }
+      ],
+      "note": "هش HEAD مخزن محلی.",
+      "challenges": [],
+      "osv_record_count": 67,
+      "advisory_ids": [
+        "CVE-2022-24439",
+        "CVE-2023-40267",
+        "CVE-2023-40590",
+        "CVE-2023-41040",
+        "CVE-2024-22190",
+        "CVE-2026-100689",
+        "CVE-2026-42284",
+        "CVE-2026-44243",
+        "CVE-2026-44244",
+        "CVE-2026-67322",
+        "CVE-2026-67323",
+        "CVE-2026-67325",
+        "CVE-2026-67326",
+        "CVE-2026-69097",
+        "CVE-2026-73619",
+        "CVE-2026-73620",
+        "CVE-2026-73621",
+        "CVE-2026-73622",
+        "CVE-2026-73623",
+        "CVE-2026-73624",
+        "CVE-2026-73625",
+        "CVE-2026-76217",
+        "CVE-2026-76218",
+        "CVE-2026-76219",
+        "CVE-2026-76220",
+        "CVE-2026-76221",
+        "CVE-2026-76222",
+        "CVE-2026-78675",
+        "CVE-2026-78676",
+        "CVE-2026-78677",
+        "CVE-2026-78678",
+        "CVE-2026-78679",
+        "CVE-2026-87817",
+        "CVE-2026-87819",
+        "GHSA-239g-whfq-7xj9",
+        "GHSA-284h-m62q-gf8w",
+        "GHSA-2f96-g7mh-g2hx",
+        "GHSA-2mqj-m65w-jghx",
+        "GHSA-3f7w-8rr8-f37f",
+        "GHSA-3rp5-jjmw-4wv2",
+        "GHSA-3wxw-xv34-2frg",
+        "GHSA-4gmw-gg2m-w46p",
+        "GHSA-539m-9xh6-q6rr",
+        "GHSA-59cr-6r3x-644w",
+        "GHSA-5xxx-qhh7-9287",
+        "GHSA-6p8h-3wgx-97gf",
+        "GHSA-7545-fcxq-7j24",
+        "GHSA-7833-fr7j-v32q",
+        "GHSA-8mcc-hrx5-hvxc",
+        "GHSA-94p4-4cq8-9g67",
+        "GHSA-956x-8gvw-wg5v",
+        "GHSA-9rj7-rf2p-w77r",
+        "GHSA-cwvm-v4w8-q58c",
+        "GHSA-fjr4-x663-mwxc",
+        "GHSA-g5vv-9gxw-82hx",
+        "GHSA-hcpj-qp55-gfph",
+        "GHSA-hh9p-6wh2-4mfc",
+        "GHSA-hmq2-w58f-27jc",
+        "GHSA-jm78-9fvv-mhgr",
+        "GHSA-mv93-w799-cj2w",
+        "GHSA-p538-c434-8v24",
+        "GHSA-pr76-5cm5-w9cj",
+        "GHSA-r9mr-m37c-5fr3",
+        "GHSA-rwj8-pgh3-r573",
+        "GHSA-v87r-6q3f-2j67",
+        "GHSA-wfm5-v35h-vwf4",
+        "GHSA-wvpp-8hx9-p66j",
+        "GHSA-x2qx-6953-8485",
+        "PYSEC-2022-42992",
+        "PYSEC-2023-137",
+        "PYSEC-2023-161",
+        "PYSEC-2023-165",
+        "PYSEC-2024-4",
+        "PYSEC-2026-2161",
+        "PYSEC-2026-2162",
+        "PYSEC-2026-2163",
+        "PYSEC-2026-3783",
+        "PYSEC-2026-3784",
+        "PYSEC-2026-3785",
+        "PYSEC-2026-3786",
+        "PYSEC-2026-3787",
+        "PYSEC-2026-3788",
+        "PYSEC-2026-3836",
+        "PYSEC-2026-3837",
+        "PYSEC-2026-3838",
+        "PYSEC-2026-3839",
+        "PYSEC-2026-3840",
+        "PYSEC-2026-3841",
+        "PYSEC-2026-3842",
+        "PYSEC-2026-3843",
+        "PYSEC-2026-3948",
+        "PYSEC-2026-3949",
+        "PYSEC-2026-3950",
+        "PYSEC-2026-3951",
+        "PYSEC-2026-3952",
+        "PYSEC-2026-3953",
+        "PYSEC-2026-3980",
+        "PYSEC-2026-3981",
+        "PYSEC-2026-3982",
+        "PYSEC-2026-3984",
+        "PYSEC-2026-3995"
+      ]
+    },
+    {
+      "id": "GT-VULN-043",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "aiohttp",
+      "version": "3.8.1",
+      "purl": "pkg:pypi/aiohttp@3.8.1",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ingest",
+        "aiohttp@3.8.1"
+      ],
+      "manifests": [
+        "services/python/ingest/pyproject.toml",
+        "services/python/ingest/poetry.lock",
+        "services/python/ingest/requirements.txt"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "import aiohttp",
+          "line": 3
+        }
+      ],
+      "note": "وضعیت سرویس راه‌دور.",
+      "challenges": [],
+      "osv_record_count": 85,
+      "advisory_ids": [
+        "CVE-2023-37276",
+        "CVE-2023-47627",
+        "CVE-2023-49081",
+        "CVE-2023-49082",
+        "CVE-2024-23334",
+        "CVE-2024-23829",
+        "CVE-2024-27306",
+        "CVE-2024-30251",
+        "CVE-2024-52304",
+        "CVE-2025-53643",
+        "CVE-2025-69223",
+        "CVE-2025-69224",
+        "CVE-2025-69225",
+        "CVE-2025-69226",
+        "CVE-2025-69227",
+        "CVE-2025-69228",
+        "CVE-2025-69229",
+        "CVE-2025-69230",
+        "CVE-2026-22815",
+        "CVE-2026-34513",
+        "CVE-2026-34514",
+        "CVE-2026-34515",
+        "CVE-2026-34516",
+        "CVE-2026-34517",
+        "CVE-2026-34518",
+        "CVE-2026-34519",
+        "CVE-2026-34520",
+        "CVE-2026-34525",
+        "CVE-2026-34993",
+        "CVE-2026-47265",
+        "CVE-2026-50269",
+        "CVE-2026-54273",
+        "CVE-2026-54274",
+        "CVE-2026-54275",
+        "CVE-2026-54276",
+        "CVE-2026-54277",
+        "CVE-2026-54278",
+        "CVE-2026-54279",
+        "CVE-2026-54280",
+        "CVE-2026-59881",
+        "CVE-2026-69243",
+        "CVE-2026-69244",
+        "GHSA-2fqr-mr3j-6wp8",
+        "GHSA-2vrm-gr82-f7m5",
+        "GHSA-3wq7-rqq7-wx6j",
+        "GHSA-45c4-8wx5-qw6w",
+        "GHSA-4fvr-rgm6-gqmc",
+        "GHSA-4m7w-qmgq-4wj5",
+        "GHSA-54jq-c3m8-4m76",
+        "GHSA-5h86-8mv2-jq9f",
+        "GHSA-5m98-qgg9-wh84",
+        "GHSA-63hf-3vf5-4wqf",
+        "GHSA-63hw-fmq6-xxg2",
+        "GHSA-69f9-5gxw-wvc2",
+        "GHSA-6jhg-hg63-jvvf",
+        "GHSA-6mq8-rvhq-8wgg",
+        "GHSA-7gpw-8wmc-pm8g",
+        "GHSA-8495-4g3g-x7pr",
+        "GHSA-8qpw-xqxj-h4r2",
+        "GHSA-9548-qrrj-x5pj",
+        "GHSA-966j-vmvw-g2g9",
+        "GHSA-9x8q-7h8h-wcw9",
+        "GHSA-c427-h43c-vf67",
+        "GHSA-cq5v-8q36-5273",
+        "GHSA-fh55-r93g-j68g",
+        "GHSA-g3cq-j2xw-wf74",
+        "GHSA-g84x-mcqj-x9qq",
+        "GHSA-gfw2-4jvh-wgfg",
+        "GHSA-hcc4-c3v8-rx92",
+        "GHSA-hg6j-4rv6-33pg",
+        "GHSA-hpj7-wq8m-9hgp",
+        "GHSA-jg22-mg44-37j8",
+        "GHSA-jj3x-wxrx-4x23",
+        "GHSA-m5qp-6w8w-w647",
+        "GHSA-m6qw-4cw2-hm4m",
+        "GHSA-mfx4-hv73-q22v",
+        "GHSA-mq44-7p77-q5h7",
+        "GHSA-mqqc-3gqh-h2x8",
+        "GHSA-mwh4-6h8g-pg8w",
+        "GHSA-p998-jp59-783m",
+        "GHSA-pjjw-qhg8-p2p9",
+        "GHSA-q3qx-c6g2-7pw2",
+        "GHSA-qvrw-v9rv-5rjx",
+        "GHSA-w2fm-2cpv-w7v5",
+        "GHSA-xcgm-r5h9-7989",
+        "PYSEC-2023-120",
+        "PYSEC-2023-246",
+        "PYSEC-2023-250",
+        "PYSEC-2023-251",
+        "PYSEC-2024-24",
+        "PYSEC-2024-26",
+        "PYSEC-2026-1097",
+        "PYSEC-2026-1098",
+        "PYSEC-2026-1099",
+        "PYSEC-2026-1100",
+        "PYSEC-2026-1101",
+        "PYSEC-2026-1102",
+        "PYSEC-2026-1103",
+        "PYSEC-2026-1104",
+        "PYSEC-2026-1105",
+        "PYSEC-2026-1106",
+        "PYSEC-2026-1107",
+        "PYSEC-2026-1109",
+        "PYSEC-2026-2094",
+        "PYSEC-2026-2095",
+        "PYSEC-2026-2096",
+        "PYSEC-2026-2097",
+        "PYSEC-2026-2098",
+        "PYSEC-2026-2099",
+        "PYSEC-2026-2100",
+        "PYSEC-2026-2101",
+        "PYSEC-2026-2102",
+        "PYSEC-2026-2103",
+        "PYSEC-2026-2104",
+        "PYSEC-2026-2105",
+        "PYSEC-2026-2106",
+        "PYSEC-2026-2107",
+        "PYSEC-2026-2108",
+        "PYSEC-2026-2109",
+        "PYSEC-2026-2110",
+        "PYSEC-2026-2111",
+        "PYSEC-2026-2112",
+        "PYSEC-2026-2113",
+        "PYSEC-2026-237",
+        "PYSEC-2026-3545",
+        "PYSEC-2026-3546",
+        "PYSEC-2026-3547"
+      ]
+    },
+    {
+      "id": "GT-VULN-044",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "pypi",
+      "name": "cryptography",
+      "version": "3.3.2",
+      "purl": "pkg:pypi/cryptography@3.3.2",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ingest",
+        "cryptography@3.3.2"
+      ],
+      "manifests": [
+        "services/python/ingest/pyproject.toml",
+        "services/python/ingest/poetry.lock",
+        "services/python/ingest/requirements.txt"
+      ],
+      "usage": [
+        {
+          "file": "services/python/ingest/lab_ingest/pipeline.py",
+          "needle": "from cryptography.fernet import Fernet",
+          "line": 6
+        }
+      ],
+      "note": "مهر کردن عنوان.",
+      "challenges": [],
+      "osv_record_count": 20,
+      "advisory_ids": [
+        "CVE-2023-0286",
+        "CVE-2023-23931",
+        "CVE-2023-49083",
+        "CVE-2023-50782",
+        "CVE-2024-0727",
+        "CVE-2026-26007",
+        "CVE-2026-34073",
+        "CVE-2026-69248",
+        "CVE-2026-69249",
+        "GHSA-3ww4-gg4f-jr7f",
+        "GHSA-537c-gmf6-5ccf",
+        "GHSA-5cpq-8wj7-hf2v",
+        "GHSA-9v9h-cgj8-h64p",
+        "GHSA-jfhm-5ghh-2f97",
+        "GHSA-jm77-qphf-c4w8",
+        "GHSA-jwv3-5hgf-82ww",
+        "GHSA-m2h6-j472-rp4c",
+        "GHSA-m959-cc7f-wv43",
+        "GHSA-r6ph-v2qm-q3c2",
+        "GHSA-v8gr-m533-ghj9",
+        "GHSA-w7pp-m8wf-vj6r",
+        "GHSA-x4qr-2fvf-3mr5",
+        "PYSEC-2023-11",
+        "PYSEC-2023-254",
+        "PYSEC-2026-1283",
+        "PYSEC-2026-1285",
+        "PYSEC-2026-2141",
+        "PYSEC-2026-35",
+        "PYSEC-2026-3553",
+        "PYSEC-2026-3554",
+        "PYSEC-2026-800",
+        "RUSTSEC-2023-0006"
+      ]
+    },
+    {
+      "id": "GT-VULN-045",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "maven",
+      "name": "org.apache.logging.log4j:log4j-core",
+      "version": "2.14.1",
+      "purl": "pkg:maven/org.apache.logging.log4j/log4j-core@2.14.1",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "ir.lab.northwind:legacy-bridge@1.0.0"
+      ],
+      "dependency_path": [
+        "web",
+        "legacy-bridge",
+        "log4j-core@2.14.1"
+      ],
+      "manifests": [
+        "services/java/orders/legacy-bridge/pom.xml"
+      ],
+      "usage": [
+        {
+          "file": "services/java/orders/legacy-bridge/src/main/java/ir/lab/northwind/legacy/OrderBridge.java",
+          "needle": "LoggerContext",
+          "line": 11,
+          "also_lines": [
+            21
+          ]
+        }
+      ],
+      "note": "Log4Shell در ماژول داخلی است، نه در pom ماژول web.",
+      "challenges": [
+        "workspace-transitive",
+        "inner-module"
+      ],
+      "osv_record_count": 7,
+      "advisory_ids": [
+        "CVE-2021-44228",
+        "CVE-2021-44832",
+        "CVE-2021-45046",
+        "CVE-2021-45105",
+        "CVE-2025-68161",
+        "CVE-2026-34477",
+        "CVE-2026-34480",
+        "GHSA-3pxv-7cmr-fjr4",
+        "GHSA-6hg6-v5c8-fphq",
+        "GHSA-7rjr-3q55-vv33",
+        "GHSA-8489-44mv-ggj8",
+        "GHSA-jfh8-c2jp-5v3q",
+        "GHSA-p6xc-xr62-6r2g",
+        "GHSA-vc5p-v9hr-52mj"
+      ]
+    },
+    {
+      "id": "GT-VULN-046",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "maven",
+      "name": "org.apache.logging.log4j:log4j-api",
+      "version": "2.14.1",
+      "purl": "pkg:maven/org.apache.logging.log4j/log4j-api@2.14.1",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "ir.lab.northwind:legacy-bridge@1.0.0"
+      ],
+      "dependency_path": [
+        "web",
+        "legacy-bridge",
+        "log4j-api@2.14.1"
+      ],
+      "manifests": [
+        "services/java/orders/legacy-bridge/pom.xml"
+      ],
+      "usage": [
+        {
+          "file": "services/java/orders/legacy-bridge/src/main/java/ir/lab/northwind/legacy/OrderBridge.java",
+          "needle": "LogManager",
+          "line": 9,
+          "also_lines": [
+            15
+          ]
+        }
+      ],
+      "note": "API همراه log4j-core در همان ماژول داخلی.",
+      "challenges": [
+        "workspace-transitive",
+        "inner-module"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2026-49844",
+        "GHSA-qv9r-c865-cp47"
+      ]
+    },
+    {
+      "id": "GT-VULN-047",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "maven",
+      "name": "org.apache.commons:commons-text",
+      "version": "1.9",
+      "purl": "pkg:maven/org.apache.commons/commons-text@1.9",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "ir.lab.northwind:legacy-bridge@1.0.0"
+      ],
+      "dependency_path": [
+        "web",
+        "legacy-bridge",
+        "commons-text@1.9"
+      ],
+      "manifests": [
+        "services/java/orders/legacy-bridge/pom.xml"
+      ],
+      "usage": [
+        {
+          "file": "services/java/orders/legacy-bridge/src/main/java/ir/lab/northwind/legacy/OrderBridge.java",
+          "needle": "StringEscapeUtils",
+          "line": 8,
+          "also_lines": [
+            20
+          ]
+        }
+      ],
+      "note": "Text4Shell در legacy-bridge.",
+      "challenges": [
+        "workspace-transitive",
+        "inner-module"
+      ],
+      "osv_record_count": 1,
+      "advisory_ids": [
+        "CVE-2022-42889",
+        "GHSA-599f-7c49-w659"
+      ]
+    },
+    {
+      "id": "GT-VULN-048",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "maven",
+      "name": "org.yaml:snakeyaml",
+      "version": "1.30",
+      "purl": "pkg:maven/org.yaml/snakeyaml@1.30",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "ir.lab.northwind:legacy-bridge@1.0.0"
+      ],
+      "dependency_path": [
+        "web",
+        "legacy-bridge",
+        "snakeyaml@1.30"
+      ],
+      "manifests": [
+        "services/java/orders/legacy-bridge/pom.xml"
+      ],
+      "usage": [
+        {
+          "file": "services/java/orders/legacy-bridge/src/main/java/ir/lab/northwind/legacy/OrderBridge.java",
+          "needle": "org.yaml.snakeyaml.Yaml",
+          "line": 12
+        }
+      ],
+      "note": "YAML داخلی پل سفارش.",
+      "challenges": [
+        "workspace-transitive",
+        "inner-module"
+      ],
+      "osv_record_count": 7,
+      "advisory_ids": [
+        "CVE-2022-1471",
+        "CVE-2022-25857",
+        "CVE-2022-38749",
+        "CVE-2022-38750",
+        "CVE-2022-38751",
+        "CVE-2022-38752",
+        "CVE-2022-41854",
+        "GHSA-3mc7-4q67-w48m",
+        "GHSA-98wm-3w3q-mw94",
+        "GHSA-9w3m-gqgf-c4p9",
+        "GHSA-c4r9-r8fh-9vj2",
+        "GHSA-hhhw-99gj-p3c3",
+        "GHSA-mjmj-j48q-9wg2",
+        "GHSA-w37g-rhq8-7m4j"
+      ]
+    },
+    {
+      "id": "GT-VULN-049",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "maven",
+      "name": "commons-collections:commons-collections",
+      "version": "3.2.1",
+      "purl": "pkg:maven/commons-collections/commons-collections@3.2.1",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "ir.lab.northwind:legacy-bridge@1.0.0"
+      ],
+      "dependency_path": [
+        "web",
+        "legacy-bridge",
+        "commons-collections@3.2.1"
+      ],
+      "manifests": [
+        "services/java/orders/legacy-bridge/pom.xml"
+      ],
+      "usage": [
+        {
+          "file": "services/java/orders/legacy-bridge/src/main/java/ir/lab/northwind/legacy/OrderBridge.java",
+          "needle": "ListUtils",
+          "line": 7,
+          "also_lines": [
+            37
+          ]
+        }
+      ],
+      "note": "کتابخانه قدیمی کالکشن در پل سفارش.",
+      "challenges": [
+        "workspace-transitive",
+        "inner-module"
+      ],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2015-6420",
+        "CVE-2015-7501",
+        "GHSA-6hgm-866r-3cjv",
+        "GHSA-fjq5-5j5f-mvxh"
+      ]
+    },
+    {
+      "id": "GT-VULN-050",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "maven",
+      "name": "com.fasterxml.jackson.core:jackson-databind",
+      "version": "2.9.10",
+      "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.10",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "ir.lab.northwind:legacy-bridge@1.0.0"
+      ],
+      "dependency_path": [
+        "web",
+        "legacy-bridge",
+        "jackson-databind@2.9.10"
+      ],
+      "manifests": [
+        "services/java/orders/legacy-bridge/pom.xml"
+      ],
+      "usage": [
+        {
+          "file": "services/java/orders/legacy-bridge/src/main/java/ir/lab/northwind/legacy/OrderBridge.java",
+          "needle": "ObjectMapper",
+          "line": 3,
+          "also_lines": [
+            41
+          ]
+        }
+      ],
+      "note": "سریال‌سازی سفارش در پل داخلی.",
+      "challenges": [
+        "workspace-transitive",
+        "inner-module"
+      ],
+      "osv_record_count": 49,
+      "advisory_ids": [
+        "BIT-nifi-2021-20190",
+        "CVE-2019-16942",
+        "CVE-2019-16943",
+        "CVE-2019-17531",
+        "CVE-2019-20330",
+        "CVE-2020-10650",
+        "CVE-2020-10672",
+        "CVE-2020-10673",
+        "CVE-2020-10968",
+        "CVE-2020-10969",
+        "CVE-2020-11111",
+        "CVE-2020-11112",
+        "CVE-2020-11113",
+        "CVE-2020-11619",
+        "CVE-2020-11620",
+        "CVE-2020-14060",
+        "CVE-2020-14061",
+        "CVE-2020-14062",
+        "CVE-2020-14195",
+        "CVE-2020-24616",
+        "CVE-2020-24750",
+        "CVE-2020-25649",
+        "CVE-2020-35490",
+        "CVE-2020-35491",
+        "CVE-2020-35728",
+        "CVE-2020-36179",
+        "CVE-2020-36180",
+        "CVE-2020-36181",
+        "CVE-2020-36182",
+        "CVE-2020-36183",
+        "CVE-2020-36184",
+        "CVE-2020-36185",
+        "CVE-2020-36186",
+        "CVE-2020-36187",
+        "CVE-2020-36188",
+        "CVE-2020-36189",
+        "CVE-2020-36518",
+        "CVE-2020-8840",
+        "CVE-2020-9546",
+        "CVE-2020-9547",
+        "CVE-2020-9548",
+        "CVE-2021-20190",
+        "CVE-2022-42003",
+        "CVE-2022-42004",
+        "CVE-2026-19032",
+        "CVE-2026-54514",
+        "CVE-2026-54515",
+        "CVE-2026-77310",
+        "CVE-2026-91776",
+        "CVE-2026-91777",
+        "GHSA-27xj-rqx5-2255",
+        "GHSA-288c-cq4h-88gq",
+        "GHSA-4w82-r329-3q67",
+        "GHSA-57j2-w4cx-62h2",
+        "GHSA-58pp-9c76-5625",
+        "GHSA-5949-rw7g-wx7w",
+        "GHSA-5jmj-h7xm-6q6v",
+        "GHSA-5p34-5m6p-p58g",
+        "GHSA-5r5r-6hpj-8gg9",
+        "GHSA-758m-v56v-grj4",
+        "GHSA-89qr-369f-5m5x",
+        "GHSA-8c4j-34r4-xr8g",
+        "GHSA-8w26-6f25-cm9x",
+        "GHSA-95cm-88f5-f2c7",
+        "GHSA-9gph-22xh-8x98",
+        "GHSA-9m6f-7xcq-8vf8",
+        "GHSA-9vvp-fxw6-jcxr",
+        "GHSA-c265-37vj-cwcc",
+        "GHSA-c2q3-4qrh-fm48",
+        "GHSA-cvm9-fjm9-3572",
+        "GHSA-cxp5-3px4-pw24",
+        "GHSA-f9xh-2qgp-cq57",
+        "GHSA-fmmc-742q-jg75",
+        "GHSA-fqwf-pjwf-7vqv",
+        "GHSA-gjmw-vf9h-g25v",
+        "GHSA-gww7-p5w4-wrfv",
+        "GHSA-h3cw-g4mq-c5x2",
+        "GHSA-h4rc-386g-6m85",
+        "GHSA-hgj6-7826-r7m5",
+        "GHSA-j823-4qch-3rgm",
+        "GHSA-jjjh-jjxp-wpff",
+        "GHSA-m6x4-97wx-4q27",
+        "GHSA-mc6h-4qgp-37qh",
+        "GHSA-mx7p-6679-8g3q",
+        "GHSA-p43x-xfjf-5jhr",
+        "GHSA-q93h-jc49-78gg",
+        "GHSA-qjw2-hr98-qgfh",
+        "GHSA-r3gr-cxrf-hg25",
+        "GHSA-r695-7vr9-jgc2",
+        "GHSA-rf6r-2c4q-2vwg",
+        "GHSA-rgv9-q543-rqg4",
+        "GHSA-rpr3-cw39-3pxh",
+        "GHSA-v3xw-c963-f5hc",
+        "GHSA-v585-23hc-c647",
+        "GHSA-vfqx-33qm-g869",
+        "GHSA-vvgp-rfg2-7rr6",
+        "GHSA-wh8g-3j2c-rqj5",
+        "GHSA-wjgm-6hv5-3cvf",
+        "GHSA-wv8q-qhhj-9h54"
+      ]
+    },
+    {
+      "id": "GT-VULN-051",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "maven",
+      "name": "com.thoughtworks.xstream:xstream",
+      "version": "1.4.17",
+      "purl": "pkg:maven/com.thoughtworks.xstream/xstream@1.4.17",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "ir.lab.northwind:legacy-bridge@1.0.0"
+      ],
+      "dependency_path": [
+        "web",
+        "legacy-bridge",
+        "xstream@1.4.17"
+      ],
+      "manifests": [
+        "services/java/orders/legacy-bridge/pom.xml"
+      ],
+      "usage": [
+        {
+          "file": "services/java/orders/legacy-bridge/src/main/java/ir/lab/northwind/legacy/OrderBridge.java",
+          "needle": "XStream",
+          "line": 4,
+          "also_lines": [
+            45
+          ]
+        }
+      ],
+      "note": "XML پل داخلی.",
+      "challenges": [
+        "workspace-transitive",
+        "inner-module"
+      ],
+      "osv_record_count": 18,
+      "advisory_ids": [
+        "BIT-jenkins-2021-43859",
+        "CVE-2021-39139",
+        "CVE-2021-39140",
+        "CVE-2021-39141",
+        "CVE-2021-39144",
+        "CVE-2021-39145",
+        "CVE-2021-39146",
+        "CVE-2021-39147",
+        "CVE-2021-39148",
+        "CVE-2021-39149",
+        "CVE-2021-39150",
+        "CVE-2021-39151",
+        "CVE-2021-39152",
+        "CVE-2021-39153",
+        "CVE-2021-39154",
+        "CVE-2021-43859",
+        "CVE-2022-40151",
+        "CVE-2022-41966",
+        "CVE-2024-47072",
+        "GHSA-2q8x-2p7f-574v",
+        "GHSA-3ccq-5vw3-2p6x",
+        "GHSA-64xx-cq4q-mf44",
+        "GHSA-6w62-hx7r-mw68",
+        "GHSA-6wf9-jmg9-vxcc",
+        "GHSA-8jrj-525p-826v",
+        "GHSA-cxfm-5m4g-x7xp",
+        "GHSA-f8cc-g7j8-xxpm",
+        "GHSA-g5w6-mrj7-75h2",
+        "GHSA-h7v4-7xg3-hxcc",
+        "GHSA-hfq9-hggm-c56q",
+        "GHSA-hph2-m3g5-xxv4",
+        "GHSA-j563-grx4-pjpv",
+        "GHSA-j9h8-phrw-h4fh",
+        "GHSA-p8pq-r894-fm8f",
+        "GHSA-qrx8-8545-4wg2",
+        "GHSA-rmr5-cpv2-vgjf",
+        "GHSA-xw4p-crpj-vjx2"
+      ]
+    },
+    {
+      "id": "GT-VULN-052",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "maven",
+      "name": "org.springframework:spring-webmvc",
+      "version": "5.3.17",
+      "purl": "pkg:maven/org.springframework/spring-webmvc@5.3.17",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "web",
+        "spring-webmvc@5.3.17"
+      ],
+      "manifests": [
+        "services/java/orders/web/pom.xml"
+      ],
+      "usage": [
+        {
+          "file": "services/java/orders/web/src/main/java/ir/lab/northwind/web/OrderController.java",
+          "needle": "@GetMapping",
+          "line": 19
+        }
+      ],
+      "note": "Spring4Shell روی ماژول وب.",
+      "challenges": [],
+      "osv_record_count": 18,
+      "advisory_ids": [
+        "CVE-2022-22965",
+        "CVE-2023-20860",
+        "CVE-2024-38816",
+        "CVE-2024-38819",
+        "CVE-2024-38828",
+        "CVE-2025-41242",
+        "CVE-2026-22735",
+        "CVE-2026-22737",
+        "CVE-2026-22741",
+        "CVE-2026-22745",
+        "CVE-2026-41841",
+        "CVE-2026-41842",
+        "CVE-2026-41843",
+        "CVE-2026-41844",
+        "CVE-2026-41845",
+        "CVE-2026-41846",
+        "CVE-2026-41853",
+        "CVE-2026-47884",
+        "GHSA-36p3-wjmg-h94x",
+        "GHSA-3chg-m5w7-qfv5",
+        "GHSA-4773-3jfm-qmx3",
+        "GHSA-6hcq-hmm3-jj3c",
+        "GHSA-6p4f-wcwh-5vvm",
+        "GHSA-72pg-x5f8-j25j",
+        "GHSA-7phw-cxx7-q9vq",
+        "GHSA-957g-f97v-vppc",
+        "GHSA-cjpg-rgq5-fr37",
+        "GHSA-cx7f-g6mp-7hqm",
+        "GHSA-g5vr-rgqm-vf78",
+        "GHSA-h3qp-gqrc-q736",
+        "GHSA-mq64-j8f9-9gcj",
+        "GHSA-pc63-qcmh-9cmg",
+        "GHSA-r936-gwx5-v52f",
+        "GHSA-w3c8-7r8f-9jp8",
+        "GHSA-wg35-8jpf-2xv3",
+        "GHSA-x23c-287f-qqv5"
+      ]
+    },
+    {
+      "id": "GT-VULN-053",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "maven",
+      "name": "org.springframework:spring-beans",
+      "version": "5.3.17",
+      "purl": "pkg:maven/org.springframework/spring-beans@5.3.17",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "web",
+        "spring-beans@5.3.17"
+      ],
+      "manifests": [
+        "services/java/orders/web/pom.xml"
+      ],
+      "usage": [
+        {
+          "file": "services/java/orders/web/src/main/java/ir/lab/northwind/web/OrderController.java",
+          "needle": "DefaultListableBeanFactory",
+          "line": 8,
+          "also_lines": [
+            17
+          ]
+        }
+      ],
+      "note": "همان خط نسخه Spring روی beans.",
+      "challenges": [],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2022-22965",
+        "CVE-2022-22970",
+        "GHSA-36p3-wjmg-h94x",
+        "GHSA-hh26-6xwr-ggv7"
+      ]
+    },
+    {
+      "id": "GT-VULN-054",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "maven",
+      "name": "io.netty:netty-codec-http2",
+      "version": "4.1.86.Final",
+      "purl": "pkg:maven/io.netty/netty-codec-http2@4.1.86.Final",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "ir.lab.northwind:net-edge@1.0.0"
+      ],
+      "dependency_path": [
+        "web",
+        "net-edge",
+        "netty-codec-http2@4.1.86.Final"
+      ],
+      "manifests": [
+        "services/java/orders/net-edge/pom.xml"
+      ],
+      "usage": [
+        {
+          "file": "services/java/orders/net-edge/src/main/java/ir/lab/northwind/net/Http2Edge.java",
+          "needle": "DefaultHttp2Connection",
+          "line": 3,
+          "also_lines": [
+            8
+          ]
+        }
+      ],
+      "note": "Netty در ماژول net-edge است و web فقط آن ماژول را وابسته کرده.",
+      "challenges": [
+        "workspace-transitive",
+        "inner-module"
+      ],
+      "osv_record_count": 9,
+      "advisory_ids": [
+        "CVE-2025-55163",
+        "CVE-2026-33871",
+        "CVE-2026-42587",
+        "CVE-2026-47244",
+        "CVE-2026-48043",
+        "CVE-2026-50560",
+        "CVE-2026-56819",
+        "CVE-2026-59900",
+        "GHSA-563q-j3cm-6jxm",
+        "GHSA-5x3r-wrvg-rp6q",
+        "GHSA-93wv-jw9v-4972",
+        "GHSA-c2gf-v879-257j",
+        "GHSA-c69g-56f8-xwqj",
+        "GHSA-f6hv-jmp6-3vwv",
+        "GHSA-prj3-ccx8-p6x4",
+        "GHSA-w9fj-cfpg-grvv",
+        "GHSA-xpw8-rcwv-8f8p"
+      ]
+    },
+    {
+      "id": "GT-VULN-055",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "golang",
+      "name": "github.com/gin-gonic/gin",
+      "version": "v1.6.3",
+      "purl": "pkg:golang/github.com/gin-gonic/gin@v1.6.3",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab.example/gateway",
+        "github.com/gin-gonic/gin@v1.6.3"
+      ],
+      "manifests": [
+        "services/go/gateway/go.mod"
+      ],
+      "usage": [
+        {
+          "file": "services/go/gateway/main.go",
+          "needle": "github.com/gin-gonic/gin",
+          "line": 8
+        }
+      ],
+      "note": "مسیریاب درگاه.",
+      "challenges": [],
+      "osv_record_count": 5,
+      "advisory_ids": [
+        "CVE-2020-28483",
+        "CVE-2023-26125",
+        "CVE-2023-29401",
+        "GHSA-2c4m-59x9-fr2g",
+        "GHSA-3vp4-m3rf-835h",
+        "GHSA-h395-qcrw-5vmq",
+        "GO-2021-0052",
+        "GO-2023-1737",
+        "SNYK-GOLANG-GITHUBCOMGINGONICGIN-1041736"
+      ]
+    },
+    {
+      "id": "GT-VULN-056",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "golang",
+      "name": "github.com/dgrijalva/jwt-go",
+      "version": "v3.2.0+incompatible",
+      "purl": "pkg:golang/github.com/dgrijalva/jwt-go@v3.2.0%2Bincompatible",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab.example/gateway",
+        "github.com/dgrijalva/jwt-go@v3.2.0+incompatible"
+      ],
+      "manifests": [
+        "services/go/gateway/go.mod"
+      ],
+      "usage": [
+        {
+          "file": "services/go/gateway/main.go",
+          "needle": "github.com/dgrijalva/jwt-go",
+          "line": 7
+        }
+      ],
+      "note": "امضای توکن درگاه.",
+      "challenges": [],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2020-26160",
+        "GHSA-w73w-5m7g-f7qc",
+        "GO-2020-0017",
+        "SNYK-GOLANG-GITHUBCOMDGRIJALVAJWTGO-596515"
+      ]
+    },
+    {
+      "id": "GT-VULN-057",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "golang",
+      "name": "golang.org/x/net",
+      "version": "v0.10.0",
+      "purl": "pkg:golang/golang.org/x/net@v0.10.0",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab.example/gateway",
+        "golang.org/x/net@v0.10.0"
+      ],
+      "manifests": [
+        "services/go/gateway/go.mod"
+      ],
+      "usage": [
+        {
+          "file": "services/go/gateway/main.go",
+          "needle": "golang.org/x/net/html",
+          "line": 9
+        }
+      ],
+      "note": "تجزیه HTML درگاه.",
+      "challenges": [],
+      "osv_record_count": 28,
+      "advisory_ids": [
+        "BIT-apisix-2023-44487",
+        "BIT-aspnet-core-2023-44487",
+        "BIT-contour-2023-44487",
+        "BIT-dotnet-2023-44487",
+        "BIT-dotnet-sdk-2023-44487",
+        "BIT-envoy-2023-44487",
+        "BIT-golang-2023-39325",
+        "BIT-golang-2023-44487",
+        "BIT-golang-2023-45288",
+        "BIT-golang-2026-33814",
+        "BIT-golang-2026-46600",
+        "BIT-golang-2026-78659",
+        "BIT-golang-2026-78660",
+        "BIT-golang-2026-78663",
+        "BIT-golang-2026-78669",
+        "BIT-golang-2026-97032",
+        "BIT-jenkins-2023-44487",
+        "BIT-kong-2023-44487",
+        "BIT-nginx-2023-44487",
+        "BIT-nginx-gateway-2023-44487",
+        "BIT-node-2023-44487",
+        "BIT-node-min-2023-44487",
+        "BIT-solr-2023-44487",
+        "BIT-tomcat-2023-44487",
+        "BIT-varnish-2023-44487",
+        "CVE-2023-39325",
+        "CVE-2023-3978",
+        "CVE-2023-44487",
+        "CVE-2023-45288",
+        "CVE-2024-45338",
+        "CVE-2025-22870",
+        "CVE-2025-22872",
+        "CVE-2025-47911",
+        "CVE-2025-58190",
+        "CVE-2026-25680",
+        "CVE-2026-25681",
+        "CVE-2026-27136",
+        "CVE-2026-33814",
+        "CVE-2026-39821",
+        "CVE-2026-42502",
+        "CVE-2026-42506",
+        "CVE-2026-46600",
+        "CVE-2026-78659",
+        "CVE-2026-78660",
+        "CVE-2026-78663",
+        "CVE-2026-78669",
+        "CVE-2026-97032",
+        "GHSA-2wrh-6pvc-2jm9",
+        "GHSA-4374-p667-p6c8",
+        "GHSA-4v7x-pqxf-cx7m",
+        "GHSA-5cv4-jp36-h3mw",
+        "GHSA-qppj-fm5r-hxr3",
+        "GHSA-qxp5-gwg8-xv66",
+        "GHSA-vvgc-356p-c3xw",
+        "GHSA-w32m-9786-jp63",
+        "GHSA-w4gw-w5jq-g9jh",
+        "GO-2023-1988",
+        "GO-2023-2102",
+        "GO-2024-2687",
+        "GO-2024-3333",
+        "GO-2025-3503",
+        "GO-2025-3595",
+        "GO-2026-4440",
+        "GO-2026-4441",
+        "GO-2026-4918",
+        "GO-2026-5025",
+        "GO-2026-5026",
+        "GO-2026-5027",
+        "GO-2026-5028",
+        "GO-2026-5029",
+        "GO-2026-5030",
+        "GO-2026-5942",
+        "GO-2026-6603",
+        "GO-2026-6610",
+        "GO-2026-6611",
+        "GO-2026-6612",
+        "GO-2026-6617"
+      ]
+    },
+    {
+      "id": "GT-VULN-058",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "golang",
+      "name": "gopkg.in/yaml.v2",
+      "version": "v2.2.2",
+      "purl": "pkg:golang/gopkg.in/yaml.v2@v2.2.2",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "lab.example/legacykit@v0.1.0"
+      ],
+      "dependency_path": [
+        "lab.example/gateway",
+        "lab.example/legacykit",
+        "gopkg.in/yaml.v2@v2.2.2"
+      ],
+      "manifests": [
+        "services/go/legacykit/go.mod"
+      ],
+      "usage": [
+        {
+          "file": "services/go/legacykit/store.go",
+          "needle": "gopkg.in/yaml.v2",
+          "line": 7
+        }
+      ],
+      "note": "YAML فقط در ماژول legacykit.",
+      "challenges": [
+        "workspace-transitive"
+      ],
+      "osv_record_count": 6,
+      "advisory_ids": [
+        "CVE-2019-11254",
+        "CVE-2021-4235",
+        "CVE-2022-3064",
+        "GHSA-6q6q-88xp-6f2r",
+        "GHSA-r88r-gmrh-7j83",
+        "GHSA-wxc4-f4m6-wwqv",
+        "GO-2020-0036",
+        "GO-2021-0061",
+        "GO-2022-0956"
+      ]
+    },
+    {
+      "id": "GT-VULN-059",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "golang",
+      "name": "golang.org/x/text",
+      "version": "v0.3.6",
+      "purl": "pkg:golang/golang.org/x/text@v0.3.6",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "lab.example/legacykit@v0.1.0"
+      ],
+      "dependency_path": [
+        "lab.example/gateway",
+        "lab.example/legacykit",
+        "golang.org/x/text@v0.3.6"
+      ],
+      "manifests": [
+        "services/go/legacykit/go.mod"
+      ],
+      "usage": [
+        {
+          "file": "services/go/legacykit/store.go",
+          "needle": "golang.org/x/text/language",
+          "line": 5
+        }
+      ],
+      "note": "برچسب زبان در ماژول داخلی.",
+      "challenges": [
+        "workspace-transitive"
+      ],
+      "osv_record_count": 6,
+      "advisory_ids": [
+        "CVE-2021-38561",
+        "CVE-2022-32149",
+        "CVE-2026-56851",
+        "CVE-2026-56852",
+        "GHSA-69ch-w2m2-3vjp",
+        "GHSA-ppp9-7jff-5vj2",
+        "GO-2021-0113",
+        "GO-2022-1059",
+        "GO-2026-5970",
+        "GO-2026-6629"
+      ]
+    },
+    {
+      "id": "GT-VULN-060",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "golang",
+      "name": "golang.org/x/crypto",
+      "version": "v0.0.0-20200622213623-75b288015ac9",
+      "purl": "pkg:golang/golang.org/x/crypto@v0.0.0-20200622213623-75b288015ac9",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "lab.example/legacykit@v0.1.0"
+      ],
+      "dependency_path": [
+        "lab.example/gateway",
+        "lab.example/legacykit",
+        "golang.org/x/crypto@v0.0.0-20200622213623-75b288015ac9"
+      ],
+      "manifests": [
+        "services/go/legacykit/go.mod"
+      ],
+      "usage": [
+        {
+          "file": "services/go/legacykit/store.go",
+          "needle": "golang.org/x/crypto/ssh",
+          "line": 4
+        }
+      ],
+      "note": "کلید SSH در ماژول داخلی.",
+      "challenges": [
+        "workspace-transitive"
+      ],
+      "osv_record_count": 48,
+      "advisory_ids": [
+        "CVE-2020-29652",
+        "CVE-2021-43565",
+        "CVE-2022-27191",
+        "CVE-2022-30636",
+        "CVE-2023-48795",
+        "CVE-2024-45337",
+        "CVE-2025-22869",
+        "CVE-2025-47913",
+        "CVE-2025-47914",
+        "CVE-2025-58181",
+        "CVE-2026-39827",
+        "CVE-2026-39828",
+        "CVE-2026-39829",
+        "CVE-2026-39830",
+        "CVE-2026-39831",
+        "CVE-2026-39832",
+        "CVE-2026-39833",
+        "CVE-2026-39834",
+        "CVE-2026-39835",
+        "CVE-2026-42508",
+        "CVE-2026-46595",
+        "CVE-2026-46597",
+        "CVE-2026-46598",
+        "CVE-2026-56854",
+        "CVE-2026-56855",
+        "CVE-2026-78662",
+        "GHSA-3vm4-22fp-5rfm",
+        "GHSA-45gg-vh54-h5m9",
+        "GHSA-45x7-px36-x8w8",
+        "GHSA-56w8-48fp-6mgv",
+        "GHSA-5cgq-3rg8-m6cv",
+        "GHSA-78mq-xcr3-xm33",
+        "GHSA-89gr-r52h-f8rx",
+        "GHSA-8c26-wmh5-6g9v",
+        "GHSA-9m57-25v3-79x9",
+        "GHSA-f5wc-c3c7-36mc",
+        "GHSA-f6x5-jh6r-wrfv",
+        "GHSA-gwc9-m7rh-j2ww",
+        "GHSA-hcg3-q754-cr77",
+        "GHSA-j5w8-q4qc-rx2x",
+        "GHSA-jppx-rxg9-jmrx",
+        "GHSA-q4h4-gmj2-qvw2",
+        "GHSA-qpw4-5x99-6vjp",
+        "GHSA-rm3j-f69w-wqmq",
+        "GHSA-v778-237x-gjrc",
+        "GHSA-vgwf-h737-ff37",
+        "GHSA-w879-237q-wc7r",
+        "GHSA-x527-x647-q7gg",
+        "GO-2021-0227",
+        "GO-2021-0356",
+        "GO-2022-0968",
+        "GO-2023-2402",
+        "GO-2024-2961",
+        "GO-2024-3321",
+        "GO-2025-3487",
+        "GO-2025-4116",
+        "GO-2025-4134",
+        "GO-2025-4135",
+        "GO-2026-5005",
+        "GO-2026-5006",
+        "GO-2026-5013",
+        "GO-2026-5014",
+        "GO-2026-5015",
+        "GO-2026-5016",
+        "GO-2026-5017",
+        "GO-2026-5018",
+        "GO-2026-5019",
+        "GO-2026-5020",
+        "GO-2026-5021",
+        "GO-2026-5023",
+        "GO-2026-5033",
+        "GO-2026-5932",
+        "GO-2026-6303",
+        "GO-2026-6354",
+        "GO-2026-6355",
+        "PYSEC-2026-1758"
+      ]
+    },
+    {
+      "id": "GT-VULN-061",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "gem",
+      "name": "nokogiri",
+      "version": "1.10.9",
+      "purl": "pkg:gem/nokogiri@1.10.9",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "legacy-import",
+        "nokogiri@1.10.9"
+      ],
+      "manifests": [
+        "services/ruby/legacy-import/Gemfile",
+        "services/ruby/legacy-import/Gemfile.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/ruby/legacy-import/import.rb",
+          "needle": "require \"nokogiri\"",
+          "line": 2
+        }
+      ],
+      "note": "تجزیه HTML واردات.",
+      "challenges": [],
+      "osv_record_count": 34,
+      "advisory_ids": [
+        "CVE-2018-25032",
+        "CVE-2020-26247",
+        "CVE-2021-30560",
+        "CVE-2021-3517",
+        "CVE-2021-3518",
+        "CVE-2021-3537",
+        "CVE-2021-41098",
+        "CVE-2021-47996",
+        "CVE-2022-24836",
+        "CVE-2022-29181",
+        "CVE-2022-50998",
+        "CVE-2022-50999",
+        "CVE-2022-51000",
+        "CVE-2023-54354",
+        "CVE-2024-58377",
+        "CVE-2024-58378",
+        "CVE-2025-71346",
+        "CVE-2025-71406",
+        "CVE-2025-71407",
+        "CVE-2026-57234",
+        "CVE-2026-57235",
+        "CVE-2026-57236",
+        "CVE-2026-57434",
+        "CVE-2026-57435",
+        "CVE-2026-57436",
+        "CVE-2026-57437",
+        "CVE-2026-57438",
+        "CVE-2026-79770",
+        "CVE-2026-79771",
+        "CVE-2026-79772",
+        "GHSA-286v-pcf5-25rc",
+        "GHSA-2qc6-mcvw-92cw",
+        "GHSA-2rr5-8q37-2w7h",
+        "GHSA-353f-x4gh-cqq8",
+        "GHSA-59gp-qqm7-cw4j",
+        "GHSA-5prr-v3j2-97mh",
+        "GHSA-5v8h-3h3q-446p",
+        "GHSA-5w6v-399v-w3cc",
+        "GHSA-7rrm-v45f-jp64",
+        "GHSA-8678-w3jw-xfc2",
+        "GHSA-9cv2-cfxc-v4v2",
+        "GHSA-c4rq-3m3g-8wgx",
+        "GHSA-cgx6-hpwq-fhv5",
+        "GHSA-crjr-9rc5-ghw8",
+        "GHSA-fq42-c5rg-92c2",
+        "GHSA-gx8x-g87m-h5q6",
+        "GHSA-jc36-42cf-vqwj",
+        "GHSA-jw9f-hh49-cvp9",
+        "GHSA-mrxw-mxhj-p664",
+        "GHSA-p67v-3w7g-wjg7",
+        "GHSA-phwj-rprq-35pp",
+        "GHSA-pxvg-2qj5-37jq",
+        "GHSA-r95h-9x8f-r3f7",
+        "GHSA-v2fc-qm4h-8hqv",
+        "GHSA-v4f8-2847-rwm7",
+        "GHSA-v6gp-9mmm-c6p5",
+        "GHSA-vr8q-g5c7-m54m",
+        "GHSA-vvfq-8hwr-qm4m",
+        "GHSA-wfpw-mmfh-qq69",
+        "GHSA-wjv4-x9w8-wm3h",
+        "GHSA-wx95-c6cv-8532",
+        "GHSA-xc9x-jj77-9p9j",
+        "GHSA-xh29-r2w5-wx8m",
+        "GHSA-xxx9-3xcr-gjj3",
+        "PSF-2022-3"
+      ]
+    },
+    {
+      "id": "GT-VULN-062",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "gem",
+      "name": "rack",
+      "version": "2.2.3",
+      "purl": "pkg:gem/rack@2.2.3",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "legacy-import",
+        "rack@2.2.3"
+      ],
+      "manifests": [
+        "services/ruby/legacy-import/Gemfile",
+        "services/ruby/legacy-import/Gemfile.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/ruby/legacy-import/import.rb",
+          "needle": "require \"rack\"",
+          "line": 3
+        }
+      ],
+      "note": "پاسخ واردات.",
+      "challenges": [],
+      "osv_record_count": 32,
+      "advisory_ids": [
+        "CVE-2022-30122",
+        "CVE-2022-30123",
+        "CVE-2022-44570",
+        "CVE-2022-44571",
+        "CVE-2022-44572",
+        "CVE-2023-27530",
+        "CVE-2023-27539",
+        "CVE-2024-25126",
+        "CVE-2024-26141",
+        "CVE-2024-26146",
+        "CVE-2025-25184",
+        "CVE-2025-27111",
+        "CVE-2025-27610",
+        "CVE-2025-32441",
+        "CVE-2025-46727",
+        "CVE-2025-59830",
+        "CVE-2025-61770",
+        "CVE-2025-61771",
+        "CVE-2025-61772",
+        "CVE-2025-61780",
+        "CVE-2025-61919",
+        "CVE-2026-22860",
+        "CVE-2026-25500",
+        "CVE-2026-26961",
+        "CVE-2026-34230",
+        "CVE-2026-34763",
+        "CVE-2026-34785",
+        "CVE-2026-34786",
+        "CVE-2026-34826",
+        "CVE-2026-34829",
+        "CVE-2026-34830",
+        "CVE-2026-34831",
+        "GHSA-22f2-v57c-j9cx",
+        "GHSA-3h57-hmj3-gj3p",
+        "GHSA-54rr-7fvw-6x8f",
+        "GHSA-625h-95r8-8xpm",
+        "GHSA-65f5-mfpf-vfhj",
+        "GHSA-6xw4-3v39-52mm",
+        "GHSA-7g2v-jj9q-g3rg",
+        "GHSA-7mqq-6cf9-v2qp",
+        "GHSA-7wqh-767x-r66v",
+        "GHSA-8cgq-6mh2-7j6v",
+        "GHSA-8vqr-qjwx-82mw",
+        "GHSA-93pm-5p5f-3ghx",
+        "GHSA-c6qg-cjj8-47qp",
+        "GHSA-gjh7-p2fx-99vx",
+        "GHSA-h2jq-g4cq-5ppq",
+        "GHSA-hxqx-xwvh-44m2",
+        "GHSA-mxw3-3hh2-x2mh",
+        "GHSA-p543-xpfm-54cp",
+        "GHSA-q2ww-5357-x388",
+        "GHSA-q4qf-9j86-f5mh",
+        "GHSA-qv7j-4883-hwh7",
+        "GHSA-r657-rxjc-j557",
+        "GHSA-rqv2-275x-2jq5",
+        "GHSA-v569-hp3g-36wr",
+        "GHSA-vgpv-f759-9wx3",
+        "GHSA-vpfw-47h7-xj4g",
+        "GHSA-w9pc-fmgc-vxvw",
+        "GHSA-whrj-4476-wvmp",
+        "GHSA-wpv5-97wm-hp9c",
+        "GHSA-wq4h-7r42-5hrr",
+        "GHSA-x8cg-fq8g-mxfx",
+        "GHSA-xj5v-6v4g-jfw6"
+      ]
+    },
+    {
+      "id": "GT-VULN-063",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "gem",
+      "name": "activesupport",
+      "version": "6.0.3.1",
+      "purl": "pkg:gem/activesupport@6.0.3.1",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "legacy-import",
+        "activesupport@6.0.3.1"
+      ],
+      "manifests": [
+        "services/ruby/legacy-import/Gemfile",
+        "services/ruby/legacy-import/Gemfile.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/ruby/legacy-import/import.rb",
+          "needle": "require \"active_support\"",
+          "line": 4
+        }
+      ],
+      "note": "منطقه زمانی تهران.",
+      "challenges": [],
+      "osv_record_count": 6,
+      "advisory_ids": [
+        "CVE-2023-22796",
+        "CVE-2023-28120",
+        "CVE-2023-38037",
+        "CVE-2026-33169",
+        "CVE-2026-33170",
+        "CVE-2026-33176",
+        "GHSA-2j26-frm8-cmj9",
+        "GHSA-89vf-4333-qx8v",
+        "GHSA-cg4j-q9v8-6v38",
+        "GHSA-cr5q-6q9f-rq6q",
+        "GHSA-j6gc-792m-qgm2",
+        "GHSA-pj73-v5mw-pm9j"
+      ]
+    },
+    {
+      "id": "GT-VULN-064",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "composer",
+      "name": "guzzlehttp/guzzle",
+      "version": "6.5.5",
+      "purl": "pkg:composer/guzzlehttp/guzzle@6.5.5",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab/reports",
+        "guzzlehttp/guzzle@6.5.5"
+      ],
+      "manifests": [
+        "services/php/reports/composer.json",
+        "services/php/reports/composer.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/php/reports/src/ReportService.php",
+          "needle": "GuzzleHttp\\Client",
+          "line": 6
+        }
+      ],
+      "note": "کلاینت گزارش. psr7 را داخل خود دارد.",
+      "challenges": [
+        "inner-layer"
+      ],
+      "osv_record_count": 14,
+      "advisory_ids": [
+        "BIT-drupal-2022-29248",
+        "BIT-drupal-2022-31042",
+        "BIT-drupal-2022-31043",
+        "CVE-2022-29248",
+        "CVE-2022-31042",
+        "CVE-2022-31043",
+        "CVE-2022-31090",
+        "CVE-2022-31091",
+        "CVE-2026-55568",
+        "CVE-2026-55767",
+        "CVE-2026-59883",
+        "CVE-2026-67339",
+        "CVE-2026-67353",
+        "CVE-2026-67354",
+        "CVE-2026-67355",
+        "CVE-2026-69245",
+        "CVE-2026-69246",
+        "DRUPAL-CORE-2022-010",
+        "DRUPAL-CORE-2022-011",
+        "GHSA-25mq-v84q-4j7r",
+        "GHSA-94pj-82f3-465w",
+        "GHSA-cwmx-hcrq-mhc3",
+        "GHSA-cwxw-98qj-8qjx",
+        "GHSA-f283-ghqc-fg79",
+        "GHSA-f2wf-25xc-69c9",
+        "GHSA-f7vp-7xgx-4w4r",
+        "GHSA-g446-98w2-8p5w",
+        "GHSA-h95v-h523-3mw8",
+        "GHSA-q559-8m2m-g699",
+        "GHSA-v5mv-p594-2x33",
+        "GHSA-w248-ffj2-4v5q",
+        "GHSA-wm3w-8rrp-j577",
+        "GHSA-wpwq-4j6v-78m3"
+      ]
+    },
+    {
+      "id": "GT-VULN-065",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "composer",
+      "name": "guzzlehttp/psr7",
+      "version": "1.8.3",
+      "purl": "pkg:composer/guzzlehttp/psr7@1.8.3",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "registry-transitive",
+      "introduced_by": [
+        "guzzlehttp/guzzle@6.5.5"
+      ],
+      "dependency_path": [
+        "lab/reports",
+        "guzzlehttp/guzzle@6.5.5",
+        "guzzlehttp/psr7@1.8.3"
+      ],
+      "manifests": [
+        "services/php/reports/composer.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/php/reports/src/ReportService.php",
+          "needle": "GuzzleHttp\\Psr7\\Request",
+          "line": 7
+        }
+      ],
+      "note": "قید ^1.7 گازل به 1.8.3 حل شده و در composer.json ریشه نیست.",
+      "challenges": [
+        "transitive"
+      ],
+      "osv_record_count": 6,
+      "advisory_ids": [
+        "BIT-drupal-2022-24775",
+        "CVE-2022-24775",
+        "CVE-2023-29197",
+        "CVE-2026-48998",
+        "CVE-2026-49214",
+        "CVE-2026-55766",
+        "CVE-2026-59882",
+        "DRUPAL-CORE-2022-006",
+        "GHSA-34xg-wgjx-8xph",
+        "GHSA-c2w2-prh8-qm98",
+        "GHSA-hq7v-mx3g-29hw",
+        "GHSA-q7rv-6hp3-vh96",
+        "GHSA-vm85-hxw5-5432",
+        "GHSA-wxmh-65f7-jcvw"
+      ]
+    },
+    {
+      "id": "GT-VULN-066",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "composer",
+      "name": "league/flysystem",
+      "version": "1.1.3",
+      "purl": "pkg:composer/league/flysystem@1.1.3",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab/reports",
+        "league/flysystem@1.1.3"
+      ],
+      "manifests": [
+        "services/php/reports/composer.json",
+        "services/php/reports/composer.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/php/reports/src/ReportService.php",
+          "needle": "League\\Flysystem\\Filesystem",
+          "line": 10
+        }
+      ],
+      "note": "نوشتن فایل گزارش.",
+      "challenges": [],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2021-32708",
+        "CVE-2026-102601",
+        "GHSA-9f46-5r25-5wfm",
+        "GHSA-cxf4-7mrp-vvpr"
+      ]
+    },
+    {
+      "id": "GT-VULN-067",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "composer",
+      "name": "dompdf/dompdf",
+      "version": "1.0.2",
+      "purl": "pkg:composer/dompdf/dompdf@1.0.2",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab/reports",
+        "dompdf/dompdf@1.0.2"
+      ],
+      "manifests": [
+        "services/php/reports/composer.json",
+        "services/php/reports/composer.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/php/reports/src/ReportService.php",
+          "needle": "Dompdf\\Dompdf",
+          "line": 5
+        }
+      ],
+      "note": "خروجی PDF.",
+      "challenges": [],
+      "osv_record_count": 14,
+      "advisory_ids": [
+        "CVE-2021-3838",
+        "CVE-2021-3902",
+        "CVE-2022-0085",
+        "CVE-2022-2400",
+        "CVE-2022-28368",
+        "CVE-2022-41343",
+        "CVE-2023-23924",
+        "CVE-2023-50262",
+        "CVE-2026-55554",
+        "CVE-2026-55555",
+        "CVE-2026-56722",
+        "CVE-2026-59941",
+        "CVE-2026-59942",
+        "CVE-2026-59943",
+        "GHSA-3cw5-7cxw-v5qg",
+        "GHSA-3qx2-6f78-w2j2",
+        "GHSA-3vjh-xrhf-v9xh",
+        "GHSA-577p-7j7h-2jgf",
+        "GHSA-5qj8-6xxj-hp9h",
+        "GHSA-6x28-7h8c-chx4",
+        "GHSA-7x2p-4jvh-6384",
+        "GHSA-8hg6-c449-896m",
+        "GHSA-cx96-42px-69fm",
+        "GHSA-f5gf-2cj8-52g2",
+        "GHSA-j8qw-6jw8-r297",
+        "GHSA-pf6p-25r2-fx45",
+        "GHSA-wvh6-f5jh-8gw4",
+        "GHSA-x752-qjv4-c4hc"
+      ]
+    },
+    {
+      "id": "GT-VULN-068",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "composer",
+      "name": "phpmailer/phpmailer",
+      "version": "6.4.1",
+      "purl": "pkg:composer/phpmailer/phpmailer@6.4.1",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "lab/legacy-http@1.0.0"
+      ],
+      "dependency_path": [
+        "lab/reports",
+        "lab/legacy-http",
+        "phpmailer/phpmailer@6.4.1"
+      ],
+      "manifests": [
+        "services/php/reports/packages/legacy-http/composer.json",
+        "services/php/reports/composer.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/php/reports/packages/legacy-http/src/LegacyHttp.php",
+          "needle": "PHPMailer\\PHPMailer\\PHPMailer",
+          "line": 5
+        }
+      ],
+      "note": "فقط وابسته بسته داخلی lab/legacy-http است.",
+      "challenges": [
+        "workspace-transitive"
+      ],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "BIT-phpmailer-2021-34551",
+        "BIT-phpmailer-2021-3603",
+        "CVE-2021-34551",
+        "CVE-2021-3603",
+        "GHSA-77mr-wc79-m8j3",
+        "GHSA-7q44-r25x-wm4q"
+      ]
+    },
+    {
+      "id": "GT-VULN-069",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "composer",
+      "name": "symfony/http-foundation",
+      "version": "5.2.7",
+      "purl": "pkg:composer/symfony/http-foundation@5.2.7",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "lab/legacy-http@1.0.0"
+      ],
+      "dependency_path": [
+        "lab/reports",
+        "lab/legacy-http",
+        "symfony/http-foundation@5.2.7"
+      ],
+      "manifests": [
+        "services/php/reports/packages/legacy-http/composer.json",
+        "services/php/reports/composer.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/php/reports/packages/legacy-http/src/LegacyHttp.php",
+          "needle": "Symfony\\Component\\HttpFoundation\\Request",
+          "line": 6
+        }
+      ],
+      "note": "درخواست HTTP در بسته داخلی.",
+      "challenges": [
+        "workspace-transitive"
+      ],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2024-50345",
+        "CVE-2025-64500",
+        "GHSA-3rg7-wf37-54rm",
+        "GHSA-mrqx-rp3w-jpjp"
+      ]
+    },
+    {
+      "id": "GT-VULN-070",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "cargo",
+      "name": "regex",
+      "version": "1.5.4",
+      "purl": "pkg:cargo/regex@1.5.4",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ledger",
+        "regex@1.5.4"
+      ],
+      "manifests": [
+        "services/rust/ledger/Cargo.toml",
+        "services/rust/Cargo.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/rust/ledger/src/lib.rs",
+          "needle": "regex::Regex",
+          "line": 6
+        }
+      ],
+      "note": "اعتبار رقم مبلغ.",
+      "challenges": [],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2022-24713",
+        "GHSA-m5pq-gvj9-9vr8",
+        "RUSTSEC-2022-0013"
+      ]
+    },
+    {
+      "id": "GT-VULN-071",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "cargo",
+      "name": "nix",
+      "version": "0.20.0",
+      "purl": "pkg:cargo/nix@0.20.0",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ledger",
+        "nix@0.20.0"
+      ],
+      "manifests": [
+        "services/rust/ledger/Cargo.toml",
+        "services/rust/Cargo.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/rust/ledger/src/lib.rs",
+          "needle": "nix::unistd::getpid",
+          "line": 12
+        }
+      ],
+      "note": "شناسه فرایند.",
+      "challenges": [],
+      "osv_record_count": 3,
+      "advisory_ids": [
+        "CVE-2021-45707",
+        "GHSA-76w9-p8mg-j927",
+        "GHSA-wgrg-5h56-jg27",
+        "RUSTSEC-2021-0119"
+      ]
+    },
+    {
+      "id": "GT-VULN-072",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "cargo",
+      "name": "tokio",
+      "version": "1.8.0",
+      "purl": "pkg:cargo/tokio@1.8.0",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ledger",
+        "tokio@1.8.0"
+      ],
+      "manifests": [
+        "services/rust/ledger/Cargo.toml",
+        "services/rust/Cargo.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/rust/ledger/src/lib.rs",
+          "needle": "tokio::runtime::Builder",
+          "line": 16
+        }
+      ],
+      "note": "ران‌تایم زمان‌بندی.",
+      "challenges": [],
+      "osv_record_count": 10,
+      "advisory_ids": [
+        "CVE-2021-38191",
+        "CVE-2021-45710",
+        "CVE-2023-22466",
+        "GHSA-2grh-hm3w-w7hv",
+        "GHSA-4q83-7cq4-p6wg",
+        "GHSA-7rrj-xr53-82p7",
+        "GHSA-fg7r-2g4j-5cgr",
+        "GHSA-rr8g-9fpq-6wmg",
+        "RUSTSEC-2021-0072",
+        "RUSTSEC-2021-0124",
+        "RUSTSEC-2023-0001",
+        "RUSTSEC-2023-0005",
+        "RUSTSEC-2025-0023"
+      ]
+    },
+    {
+      "id": "GT-VULN-073",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "cargo",
+      "name": "smallvec",
+      "version": "1.6.0",
+      "purl": "pkg:cargo/smallvec@1.6.0",
+      "depth": 1,
+      "scope": "runtime",
+      "relationship": "direct",
+      "introduced_by": [],
+      "dependency_path": [
+        "lab-ledger",
+        "smallvec@1.6.0"
+      ],
+      "manifests": [
+        "services/rust/ledger/Cargo.toml",
+        "services/rust/Cargo.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/rust/ledger/src/lib.rs",
+          "needle": "smallvec::SmallVec",
+          "line": 22
+        }
+      ],
+      "note": "بافر کدهای کوتاه.",
+      "challenges": [],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2021-25900",
+        "GHSA-43w2-9j62-hq99",
+        "RUSTSEC-2021-0003"
+      ]
+    },
+    {
+      "id": "GT-VULN-074",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "cargo",
+      "name": "h2",
+      "version": "0.3.15",
+      "purl": "pkg:cargo/h2@0.3.15",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "lab-wire@0.1.0"
+      ],
+      "dependency_path": [
+        "lab-ledger",
+        "lab-wire",
+        "h2@0.3.15"
+      ],
+      "manifests": [
+        "services/rust/lab-wire/Cargo.toml",
+        "services/rust/Cargo.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/rust/lab-wire/src/lib.rs",
+          "needle": "h2::Reason",
+          "line": 1,
+          "also_lines": [
+            2,
+            11
+          ]
+        }
+      ],
+      "note": "لایه پروتکل داخل lab-wire.",
+      "challenges": [
+        "workspace-transitive"
+      ],
+      "osv_record_count": 7,
+      "advisory_ids": [
+        "CVE-2023-26964",
+        "GHSA-8r5v-vm4m-4g25",
+        "GHSA-f8vr-r385-rh5r",
+        "GHSA-q6cp-qfwq-4gcv",
+        "GHSA-q83h-524g-xf6h",
+        "RUSTSEC-2023-0034",
+        "RUSTSEC-2024-0003",
+        "RUSTSEC-2024-0332",
+        "RUSTSEC-2026-0258"
+      ]
+    },
+    {
+      "id": "GT-VULN-075",
+      "kind": "vulnerable",
+      "detectors": [
+        "sca"
+      ],
+      "ecosystem": "cargo",
+      "name": "time",
+      "version": "0.1.43",
+      "purl": "pkg:cargo/time@0.1.43",
+      "depth": 2,
+      "scope": "runtime",
+      "relationship": "workspace-transitive",
+      "introduced_by": [
+        "lab-wire@0.1.0"
+      ],
+      "dependency_path": [
+        "lab-ledger",
+        "lab-wire",
+        "time@0.1.43"
+      ],
+      "manifests": [
+        "services/rust/lab-wire/Cargo.toml",
+        "services/rust/Cargo.lock"
+      ],
+      "usage": [
+        {
+          "file": "services/rust/lab-wire/src/lib.rs",
+          "needle": "time::Duration",
+          "line": 5,
+          "also_lines": [
+            6
+          ]
+        }
+      ],
+      "note": "پنجره زمانی داخل lab-wire.",
+      "challenges": [
+        "workspace-transitive"
+      ],
+      "osv_record_count": 2,
+      "advisory_ids": [
+        "CVE-2020-26235",
+        "GHSA-wcg3-cvx6-7396",
+        "RUSTSEC-2020-0071"
+      ]
+    }
+  ],
+  "do_not_flag": [
+    {
+      "ecosystem": "npm",
+      "name": "colors",
+      "version": "1.4.0",
+      "purl": "pkg:npm/colors@1.4.0",
+      "reason": "decoy",
+      "note": "آخرین نسخه سالم colors قبل از خرابکاری 1.4.1.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "chalk",
+      "version": "4.1.2",
+      "purl": "pkg:npm/chalk@4.1.2",
+      "reason": "decoy",
+      "note": "بسته رنگ سالم برای ایجاد نویز کنار colors.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "debug",
+      "version": "4.3.4",
+      "purl": "pkg:npm/debug@4.3.4",
+      "reason": "decoy",
+      "note": "نسخه بدون گزارش OSV.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "event-stream",
+      "version": "4.0.1",
+      "purl": "pkg:npm/event-stream@4.0.1",
+      "reason": "decoy",
+      "note": "خط 4.x بعد از حادثه flatmap-stream. نباید بدافزار حساب شود.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "faker",
+      "version": "5.5.3",
+      "purl": "pkg:npm/faker@5.5.3",
+      "reason": "decoy",
+      "note": "آخرین خط سالم faker قبل از 6.6.6.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ua-parser-js",
+      "version": "1.0.37",
+      "purl": "pkg:npm/ua-parser-js@1.0.37",
+      "reason": "decoy",
+      "note": "بعد از اصلاح ReDoS. نه بدافزار است نه آسیب‌پذیر در OSV.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cross-env",
+      "version": "7.0.3",
+      "purl": "pkg:npm/cross-env@7.0.3",
+      "reason": "decoy",
+      "note": "بسته اصلی. crossenv بدون خط تیره تایپواسکوات است.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "mkdirp",
+      "version": "0.5.5",
+      "purl": "pkg:npm/mkdirp@0.5.5",
+      "reason": "clean-parent",
+      "note": "خود بسته سالم است؛ minimist زیر آن آسیب‌پذیر است.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "yargs",
+      "version": "15.4.1",
+      "purl": "pkg:npm/yargs@15.4.1",
+      "reason": "clean-parent",
+      "note": "خود بسته سالم است؛ y18n زیر آن آسیب‌پذیر است.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "pypi",
+      "name": "colorama",
+      "version": "0.4.6",
+      "purl": "pkg:pypi/colorama@0.4.6",
+      "reason": "decoy",
+      "note": "بسته رنگ قانونی. با نام‌های نزدیک اشتباه گرفته نشود.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "gem",
+      "name": "rest-client",
+      "version": "2.1.0",
+      "purl": "pkg:gem/rest-client@2.1.0",
+      "reason": "decoy",
+      "note": "خارج از بازه بکدور 1.6.10 تا 1.6.13 و بدون گزارش OSV.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@lab/cli-theme",
+      "version": "1.0.0",
+      "purl": "pkg:npm/%40lab/cli-theme@1.0.0",
+      "reason": "internal",
+      "note": "کتابخانه خود آزمایشگاه.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@lab/payments-core",
+      "version": "1.0.0",
+      "purl": "pkg:npm/%40lab/payments-core@1.0.0",
+      "reason": "internal",
+      "note": "کتابخانه خود آزمایشگاه.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lab-billing-worker",
+      "version": "1.0.0",
+      "purl": "pkg:npm/lab-billing-worker@1.0.0",
+      "reason": "internal",
+      "note": "سرویس خود آزمایشگاه.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lab-build-tools",
+      "version": "1.0.0",
+      "purl": "pkg:npm/lab-build-tools@1.0.0",
+      "reason": "internal",
+      "note": "ابزار خود آزمایشگاه.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lab-catalog-seed",
+      "version": "1.0.0",
+      "purl": "pkg:npm/lab-catalog-seed@1.0.0",
+      "reason": "internal",
+      "note": "سرویس خود آزمایشگاه.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lab-checkout-api",
+      "version": "1.0.0",
+      "purl": "pkg:npm/lab-checkout-api@1.0.0",
+      "reason": "internal",
+      "note": "سرویس خود آزمایشگاه.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lab-docs-widget",
+      "version": "1.0.0",
+      "purl": "pkg:npm/lab-docs-widget@1.0.0",
+      "reason": "internal",
+      "note": "سرویس خود آزمایشگاه.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lab-marketing-site",
+      "version": "1.0.0",
+      "purl": "pkg:npm/lab-marketing-site@1.0.0",
+      "reason": "internal",
+      "note": "سرویس خود آزمایشگاه.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "pypi",
+      "name": "lab-vision",
+      "version": "0.1.0",
+      "purl": "pkg:pypi/lab-vision@0.1.0",
+      "reason": "internal",
+      "note": "کتابخانه خود آزمایشگاه.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "maven",
+      "name": "ir.lab.northwind:orders-parent",
+      "version": "1.0.0",
+      "purl": "pkg:maven/ir.lab.northwind/orders-parent@1.0.0",
+      "reason": "internal",
+      "note": "pom والد آزمایشگاه.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "maven",
+      "name": "ir.lab.northwind:legacy-bridge",
+      "version": "1.0.0",
+      "purl": "pkg:maven/ir.lab.northwind/legacy-bridge@1.0.0",
+      "reason": "internal",
+      "note": "ماژول داخلی جاوا.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "maven",
+      "name": "ir.lab.northwind:net-edge",
+      "version": "1.0.0",
+      "purl": "pkg:maven/ir.lab.northwind/net-edge@1.0.0",
+      "reason": "internal",
+      "note": "ماژول داخلی جاوا.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "maven",
+      "name": "ir.lab.northwind:web",
+      "version": "1.0.0",
+      "purl": "pkg:maven/ir.lab.northwind/web@1.0.0",
+      "reason": "internal",
+      "note": "ماژول داخلی جاوا.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "golang",
+      "name": "lab.example/legacykit",
+      "version": "UNKNOWN",
+      "purl": "pkg:golang/lab.example/legacykit",
+      "reason": "internal",
+      "note": "ماژول داخلی Go. Syft به‌خاطر replace نسخه را UNKNOWN می‌گذارد.",
+      "osv_record_count": null
+    },
+    {
+      "ecosystem": "composer",
+      "name": "lab/legacy-http",
+      "version": "1.0.0",
+      "purl": "pkg:composer/lab/legacy-http@1.0.0",
+      "reason": "internal",
+      "note": "بسته Composer داخلی.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "cargo",
+      "name": "lab-ledger",
+      "version": "0.1.0",
+      "purl": "",
+      "reason": "internal",
+      "note": "crate خود آزمایشگاه. Syft برای crate محلی purl نمی‌سازد.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    },
+    {
+      "ecosystem": "cargo",
+      "name": "lab-wire",
+      "version": "0.1.0",
+      "purl": "",
+      "reason": "internal",
+      "note": "crate داخلی. بدافزار rustdecimal زیر آن است.",
+      "osv_record_count": 0,
+      "advisory_ids": []
+    }
+  ],
+  "supplemental": [
+    {
+      "id": "GT-SUP-001",
+      "kind": "malicious-historical",
+      "detectors": [],
+      "ecosystem": "npm",
+      "name": "peacenotwar",
+      "version": "9.1.5",
+      "purl": "pkg:npm/peacenotwar@9.1.5",
+      "depth": 2,
+      "scope": "dev",
+      "relationship": "dev-transitive",
+      "introduced_by": [
+        "node-ipc@9.2.2"
+      ],
+      "dependency_path": [
+        "lab-build-tools",
+        "node-ipc@9.2.2",
+        "peacenotwar@9.1.5"
+      ],
+      "manifests": [
+        "services/node/build-tools/package-lock.json"
+      ],
+      "usage": [
+        {
+          "file": "services/node/build-tools/src/dev-hooks.js",
+          "needle": "require(\"peacenotwar\")",
+          "line": 6
+        }
+      ],
+      "note": "لایه داخلی node-ipc 9.2.2 طبق شرح GHSA-8gr3-2gjw-jj7g. در تاریخ ساخت این آزمایشگاه OSV برای خود peacenotwar شناسه نداشت، پس نیافتن آن خطای MDA نیست و یافتنش امتیاز اضافه است.",
+      "challenges": [
+        "inner-layer",
+        "feed-gap"
+      ],
+      "advisory_ids": [],
+      "osv_record_count": 0
+    }
+  ]
+}
