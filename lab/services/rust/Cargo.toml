@@ -1,3 +1,0 @@
-[workspace]
-members = ["ledger", "lab-wire"]
-resolver = "2"

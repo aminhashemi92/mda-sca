@@ -1,9 +1,0 @@
-{
-  "name": "@lab/cli-theme",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Terminal labels. The tilde range admits the sabotaged 1.4.1 release.",
-  "dependencies": {
-    "colors": "~1.4.0"
-  }
-}
