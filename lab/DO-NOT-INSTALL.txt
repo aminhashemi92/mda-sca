@@ -1,8 +1,7 @@
-این مخزن را نصب یا اجرا نکنید.
+Do not install or run this repository.
 
-Do not install or run this lab.
-
-npm install، pip install، mvn، go build، bundle، composer install و cargo build
-مختصات آلوده را از رجیستری می‌گیرند و در چند مورد همان نصب، کد مخرب را اجرا می‌کند.
-بایت بدافزار داخل این مخزن نیست. آزمایشگاه فقط مانیفست، قفل وابستگی، کد ارجاع‌دهنده،
-SBOM و پاسخ درست است و برای اسکن ایستا ساخته شده.
+npm install, pip install, mvn, go build, bundle, composer install, and cargo build
+fetch the malicious coordinates from the registry, and in several cases the install
+itself executes the malicious code.
+This repository does not contain malware bytes. The lab is only manifests, lockfiles,
+source references, an SBOM, and ground truth, and it is meant for static scanning.

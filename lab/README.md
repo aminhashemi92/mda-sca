@@ -1,60 +1,60 @@
-# آزمایشگاه زنجیره تأمین Northwind
+# Northwind supply-chain lab
 
-فیکسچر ایستا برای سنجیدن دو اسکنر:
+Static fixture for measuring two scanners:
 
-- **MDA** باید بسته‌هایی را پیدا کند که عمداً آلوده یا خراب شده‌اند.
-- **SCA** باید بسته‌های آسیب‌پذیر را پیدا کند.
+- **MDA** should find packages that were intentionally infected or sabotaged.
+- **SCA** should find vulnerable packages.
 
-هر دو قرار است SBOM را، مثل خروجی Syft، با پایگاه‌هایی مثل OSV و GitHub Advisory مقایسه کنند. کد سرویس‌ها این بسته‌ها را واقعاً صدا می‌زند تا اگر اسکنر به استفاده در کد هم نگاه کند، محل استفاده را ببیند.
+Both are expected to compare an SBOM, such as Syft output, with databases such as OSV and the GitHub Advisory Database. Service code calls these packages so a scanner that also looks at usage can see the call site.
 
-**این آزمایشگاه را نصب یا اجرا نکنید.** جزئیات در `DO-NOT-INSTALL.txt` است.
+**Do not install or run this lab.** Details are in `DO-NOT-INSTALL.txt`.
 
-## چه چیزی داخلش هست
+## What is in it
 
-هفت اکوسیستم در یک مونوریپو قرار دارند: JavaScript، Python، Java، Go، Ruby، PHP و Rust.
+Seven ecosystems live in one monorepo: JavaScript, Python, Java, Go, Ruby, PHP, and Rust.
 
-پاسخ درست ۹۲ مختصات یکتا دارد:
+The ground truth has 92 unique coordinates:
 
-| گیرنده | تعداد | معنی |
+| Detector | Count | Meaning |
 | --- | ---: | --- |
-| MDA | 17 | بسته آلوده یا خراب‌شده |
-| SCA | 76 | بسته آسیب‌پذیر |
+| MDA | 17 | Malicious or sabotaged package |
+| SCA | 76 | Vulnerable package |
 
-`rest-client@1.6.13` در هر دو شمرده می‌شود، چون هم بکدور دارد و هم CVEهای قدیمی‌تر. ۲۸ بسته دیگر در SBOM هستند و **نباید** گزارش شوند: نسخه سالمِ همان نام، والد تمیزی که فقط فرزندش بد است، یا ماژول خود آزمایشگاه. `peacenotwar@9.1.5` لایه داخلی `node-ipc@9.2.2` است، ولی در زمان ساخت این آزمایشگاه شناسه OSV نداشت؛ یافتنش امتیاز اضافه است و نیافتنش خطا نیست.
+`rest-client@1.6.13` counts for both, because it carries a backdoor and older CVEs. Another 28 packages are in the SBOM and **must not** be reported: a clean version of the same name, a clean parent whose child is the problem, or a module that belongs to this lab. `peacenotwar@9.1.5` is an inner dependency of `node-ipc@9.2.2`, but it had no OSV id when this lab was built. Finding it is extra credit. Missing it is not a false negative.
 
-## چرا پیدا کردنش سخت است
+## Why it is hard to find
 
-- آلودگی و آسیب‌پذیری اغلب در لایه دوم یا سوم است، نه در وابستگی مستقیم سرویس. نمونه کلاسیک: `billing-worker` → `@lab/payments-core` → `event-stream@3.3.6` → `flatmap-stream@0.1.1`.
-- مانیفست گاهی بازه بی‌خطرنشان می‌دهد و قفل نسخه بد را سنجاق کرده: `event-stream` با `~3.3.4` به `3.3.6`، و `colors` با `~1.4.0` به `1.4.1`.
-- همان نام در سرویس دیگر نسخه سالم یا فقط آسیب‌پذیر دارد. `ua-parser-js@0.7.29` بدافزار است، `1.0.2` فقط ReDoS است، و `1.0.37` سالم است.
-- `ua-parser-js@0.7.29` پشت نام مستعار npm به نام `parser-lib` پنهان شده.
-- بخشی از بدافزار npm فقط در `devDependencies` ابزار ساخت است: `coa`، `rc`، `crossenv`، `eslint-scope`.
-- `cross-env@7.0.3` سالم کنار تایپواسکوات `crossenv@1.0.1` نشسته. `github.com/boltdb-go/bolt` و `rustdecimal` هم همین نوع شباهت اسمی را دارند.
-- والدهایی مثل `mkdirp@0.5.5` و `yargs@15.4.1` خودشان سالم‌اند و فرزند آسیب‌پذیر دارند.
-- در پایتون، `ultralytics@8.3.41` فقط از کتابخانه داخلی `lab-vision` می‌آید و در `requirements.txt` نیست. `urllib3` و `idna` زیر `requests` هستند و `Werkzeug` و `Jinja2` زیر `Flask`.
-- در جاوا، Log4j و XStream و SnakeYAML و Jackson داخل ماژول `legacy-bridge` هستند و Netty داخل `net-edge`. ماژول `web` خودش Spring 5.3.17 را دارد.
-- قفل‌ها گزیده‌اند. وابستگی بی‌خطری که جزو آزمون نیست حذف شده تا هر بسته شخص ثالث در SBOM تکلیف مشخصی داشته باشد: پیدا شود، یا عمداً گزارش نشود.
+- Infection and vulnerabilities usually sit at depth two or three, past the service's direct dependency. The classic chain is `billing-worker` → `@lab/payments-core` → `event-stream@3.3.6` → `flatmap-stream@0.1.1`.
+- A manifest sometimes shows a harmless-looking range while the lockfile pins the bad release: `event-stream` `~3.3.4` resolves to `3.3.6`, and `colors` `~1.4.0` resolves to `1.4.1`.
+- The same name has a clean or merely vulnerable release in another service. `ua-parser-js@0.7.29` is malware, `1.0.2` is ReDoS only, and `1.0.37` is clean.
+- `ua-parser-js@0.7.29` is hidden behind the npm alias `parser-lib`.
+- Some npm malware exists only in the build tool's `devDependencies`: `coa`, `rc`, `crossenv`, and `eslint-scope`.
+- Clean `cross-env@7.0.3` sits next to the typosquat `crossenv@1.0.1`. `github.com/boltdb-go/bolt` and `rustdecimal` are the same kind of name lookalike.
+- Parents such as `mkdirp@0.5.5` and `yargs@15.4.1` are themselves clean and have a vulnerable child.
+- In Python, `ultralytics@8.3.41` arrives only through the internal library `lab-vision` and is absent from `requirements.txt`. `urllib3` and `idna` sit under `requests`, and `Werkzeug` and `Jinja2` sit under `Flask`.
+- In Java, Log4j, XStream, SnakeYAML, and Jackson live in the `legacy-bridge` module, and Netty lives in `net-edge`. The `web` module directly depends on Spring 5.3.17.
+- Lockfiles are curated. Harmless dependencies that are not part of the test were omitted so every third-party package in the SBOM has a defined expected result: report it, or deliberately leave it out.
 
-جزئیات هر مورد، مسیر وابستگی، فایل و شماره خط استفاده، و شناسه‌های OSV در `ground-truth/expected-findings.json` است.
+Each case, its dependency path, the file and line of use, and the OSV ids are in `ground-truth/expected-findings.json`.
 
 ## SBOM
 
-SBOM با Syft 1.54.1 از روی همین مانیفست‌ها ساخته شده و کد یا بسته‌ای نصب نشده:
+The SBOM was produced with Syft 1.54.1 from these manifests. Nothing was installed:
 
 - `sbom/lab.cdx.json`
 - `sbom/lab.spdx.json`
 
-ساخت دوباره:
+Regenerate it with:
 
 ```bash
 ./scripts/refresh_sbom.sh
 ```
 
-Syft 1.54 ورودی قفل npm را که `"dev": true` داشته باشد از SBOM حذف می‌کند. برای همین در `package-lock.json` این پرچم گذاشته نشده، ولی همان بسته‌ها در `package.json` هنوز `devDependencies` هستند. اسکنری که فقط کلید `dependencies` را بخواند آن‌ها را از دست می‌دهد.
+Syft 1.54 drops npm lockfile entries that set `"dev": true`. That flag is absent from `package-lock.json` for this reason, while the same packages remain `devDependencies` in `package.json`. A scanner that reads only the `dependencies` key will miss them.
 
-## سنجیدن گزارش اسکنر
+## Scoring a scanner report
 
-گزارش را این‌شکل بدهید. `detector` اختیاری است و `mda` یا `sca` می‌پذیرد. `purl` هم به‌جای سه‌تایی اکوسیستم و نام و نسخه قابل استفاده است.
+Submit a report in this shape. `detector` is optional and accepts `mda` or `sca`. A `purl` can be used instead of the ecosystem, name, and version triple.
 
 ```json
 {
@@ -68,6 +68,6 @@ Syft 1.54 ورودی قفل npm را که `"dev": true` داشته باشد از
 python3 scripts/score_report.py report.json
 ```
 
-خروجی دقت، فراخوانی و F1 را جدا برای MDA و SCA چاپ می‌کند. گزارش یک بسته `do_not_flag` خطای مثبت کاذب است. اگر چیزی جا مانده باشد یا مثبت کاذب باشد، کد خروج ۱ است.
+The script prints precision, recall, and F1 separately for MDA and SCA. Reporting a `do_not_flag` package is a false positive. The process exits 1 when anything is missed or falsely reported.
 
-نام‌های اکوسیستم `npm`، `pypi`، `maven`، `golang`، `gem`، `composer` و `cargo` هستند. برای پایتون حروف بزرگ و زیرخط با نام معیار یکی گرفته می‌شود. برای Go پیشوند `v` بخشی از نسخه است.
+Ecosystem names are `npm`, `pypi`, `maven`, `golang`, `gem`, `composer`, and `cargo`. For Python, case and underscores are folded to the canonical name. For Go, the `v` prefix is part of the version.

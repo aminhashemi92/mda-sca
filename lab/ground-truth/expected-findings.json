@@ -30,10 +30,10 @@
     "supplemental": 1
   },
   "notes": [
-    "قفل‌ها گزیده هستند: وابستگی‌های بی‌خطر و خارج از آزمون حذف شده‌اند تا هر بسته شخص ثالث در SBOM تکلیف مشخص داشته باشد.",
-    "نصب یا اجرای این آزمایشگاه ممنوع است. مختصات آلوده فقط در مانیفست، قفل و کد ارجاع شده‌اند و بایت بدافزار داخل مخزن نیست.",
-    "Syft 1.54 ورودی‌های package-lock را که فیلد dev=true دارند حذف می‌کند. scope توسعه در package.json مانده و در قفل این پرچم عمداً نیست تا بسته در SBOM بماند.",
-    "شناسههای advisory در تاریخ ساخت از OSV خوانده شده‌اند. تعداد رکورد OSV ممکن است بعداً بیشتر شود."
+    "Lockfiles are curated: harmless dependencies that are not part of the test were omitted so every third-party package in the SBOM has a defined expected result.",
+    "Do not install or run this lab. Malicious coordinates appear only in manifests, lockfiles, and source references. The repository does not contain malware bytes.",
+    "Syft 1.54 drops package-lock entries that set dev=true. The development scope remains in package.json, and that flag is intentionally absent from the lockfile so the package stays in the SBOM.",
+    "Advisory ids were read from OSV when this lab was built. The OSV record count may grow later."
   ],
   "findings": [
     {
@@ -70,7 +70,7 @@
           "line": 2
         }
       ],
-      "note": "بدافزار واقعی در لایه سوم است؛ سرویس billing فقط payments-core را می‌بیند.",
+      "note": "The real malware is at depth three. The billing service only sees payments-core.",
       "challenges": [
         "transitive",
         "nested-lock"
@@ -115,7 +115,7 @@
           "line": 1
         }
       ],
-      "note": "package.json بازه ~3.3.4 دارد و قفل روی نسخه آلوده 3.3.6 نشسته. نسخه 4.0.1 در checkout سالم است.",
+      "note": "package.json allows ~3.3.4 and the lockfile pins the malicious 3.3.6 release. checkout uses the clean 4.0.1 release.",
       "challenges": [
         "version-range",
         "decoy-version",
@@ -159,7 +159,7 @@
           "line": 4
         }
       ],
-      "note": "در devDependencies نیست؛ از eslint-config-eslint که خودش هم آلوده است وارد شده.",
+      "note": "It is not a direct devDependency. It arrives through eslint-config-eslint, which is itself malicious.",
       "challenges": [
         "dev-scope",
         "transitive"
@@ -199,7 +199,7 @@
           "line": 3
         }
       ],
-      "note": "وابستگی توسعه است و فقط از extends در eslintrc استفاده شده.",
+      "note": "Development dependency, referenced only through extends in eslintrc.",
       "challenges": [
         "dev-scope"
       ],
@@ -241,7 +241,7 @@
           "line": 9
         }
       ],
-      "note": "در package.json با نام مستعار parser-lib آمده. نسخه‌های 1.0.2 و 1.0.37 همین نام را در سرویس‌های دیگر دارند.",
+      "note": "package.json exposes it under the alias parser-lib. Versions 1.0.2 and 1.0.37 of the same name live in other services.",
       "challenges": [
         "alias",
         "multi-version"
@@ -281,7 +281,7 @@
           "line": 1
         }
       ],
-      "note": "نسخه ربوده‌شده در ابزار ساخت، نه در وابستگی اجرایی سرویس.",
+      "note": "Hijacked release in the build tool, outside the service runtime dependencies.",
       "challenges": [
         "dev-scope"
       ],
@@ -319,7 +319,7 @@
           "line": 2
         }
       ],
-      "note": "هم‌خانواده حادثه coa، فقط در devDependencies.",
+      "note": "Same incident family as coa, and only a devDependency.",
       "challenges": [
         "dev-scope"
       ],
@@ -357,7 +357,7 @@
           "line": 5
         }
       ],
-      "note": "نسخه دارای کد مخرب مستقیم. نسخه 9.2.2 جداگانه در build-tools است.",
+      "note": "Release with malicious code in the package itself. Version 9.2.2 is a separate copy in build-tools.",
       "challenges": [
         "multi-version"
       ],
@@ -396,7 +396,7 @@
           "line": 5
         }
       ],
-      "note": "نسخه دارای رفتار پنهان که peacenotwar را به عنوان وابستگی داخلی می‌کشد.",
+      "note": "Release with hidden behavior that pulls peacenotwar as an inner dependency.",
       "challenges": [
         "dev-scope",
         "multi-version",
@@ -440,7 +440,7 @@
           "line": 1
         }
       ],
-      "note": "بازه ~1.4.0 در cli-theme به 1.4.1 حل شده. checkout همان نام را روی 1.4.0 سالم سنجاق کرده.",
+      "note": "The ~1.4.0 range in cli-theme resolves to 1.4.1. checkout pins the same name to the clean 1.4.0 release.",
       "challenges": [
         "version-range",
         "decoy-version",
@@ -482,7 +482,7 @@
           "line": 1
         }
       ],
-      "note": "نسخه خراب‌شده. docs-widget از faker سالم 5.5.3 استفاده می‌کند.",
+      "note": "Sabotaged release. docs-widget uses the clean faker 5.5.3.",
       "challenges": [
         "decoy-version"
       ],
@@ -520,7 +520,7 @@
           "line": 3
         }
       ],
-      "note": "تایپواسکوات cross-env. بسته سالم cross-env نسخه 7.0.3 کنار آن در dependencies است.",
+      "note": "Typosquat of cross-env. The clean cross-env 7.0.3 package sits beside it in dependencies.",
       "challenges": [
         "typosquat",
         "dev-scope",
@@ -562,7 +562,7 @@
           "line": 7
         }
       ],
-      "note": "نسخه ربوده‌شده یک بسته قدیمی و کم‌سروصدا.",
+      "note": "Hijacked release of an old, quiet package.",
       "challenges": [
         "direct"
       ],
@@ -605,7 +605,7 @@
           "line": 1
         }
       ],
-      "note": "در requirements.txt سرویس ingest نیست؛ فقط وابستگی کتابخانه داخلی lab-vision است.",
+      "note": "Absent from the ingest service requirements.txt. It is only a dependency of the internal lab-vision library.",
       "challenges": [
         "workspace-transitive",
         "hidden-from-requirements"
@@ -645,7 +645,7 @@
           "line": 1
         }
       ],
-      "note": "نسخه بکدور CVE-2019-15224. علاوه بر بدافزار، آسیب‌پذیری‌های قدیمی‌تر هم دارد. admin-portal نسخه سالم 2.1.0 را دارد.",
+      "note": "Backdoored release for CVE-2019-15224. It also has older vulnerabilities. admin-portal uses the clean 2.1.0 release.",
       "challenges": [
         "decoy-version",
         "malware-and-cve"
@@ -692,7 +692,7 @@
           "line": 10
         }
       ],
-      "note": "تایپواسکوات rust_decimal داخل crate داخلی lab-wire، نه در وابستگی مستقیم ledger.",
+      "note": "Typosquat of rust_decimal inside the internal lab-wire crate, not a direct ledger dependency.",
       "challenges": [
         "typosquat",
         "workspace-transitive"
@@ -735,7 +735,7 @@
           "line": 6
         }
       ],
-      "note": "مسیر ماژول جعلی کنار نام bolt رسمی. در go.mod درگاه دیده نمی‌شود.",
+      "note": "Lookalike module path next to the legitimate bolt name. It does not appear in the gateway go.mod.",
       "challenges": [
         "typosquat",
         "workspace-transitive"
@@ -775,7 +775,7 @@
           "line": 1
         }
       ],
-      "note": "فریم‌ورک مستقیم checkout.",
+      "note": "Direct checkout framework.",
       "challenges": [],
       "osv_record_count": 2,
       "advisory_ids": [
@@ -816,7 +816,7 @@
           "line": 1
         }
       ],
-      "note": "وابستگی قفل‌شده express، در package.json سرویس نیست.",
+      "note": "Locked transitive dependency of express. It is absent from the service package.json.",
       "challenges": [
         "transitive"
       ],
@@ -863,7 +863,7 @@
           "line": 2
         }
       ],
-      "note": "وابستگی قفل‌شده express.",
+      "note": "Locked transitive dependency of express.",
       "challenges": [
         "transitive"
       ],
@@ -904,7 +904,7 @@
           "line": 3
         }
       ],
-      "note": "وابستگی قفل‌شده express.",
+      "note": "Locked transitive dependency of express.",
       "challenges": [
         "transitive"
       ],
@@ -947,7 +947,7 @@
           "line": 1
         }
       ],
-      "note": "کلاینت بالادستی checkout.",
+      "note": "Checkout upstream client.",
       "challenges": [],
       "osv_record_count": 25,
       "advisory_ids": [
@@ -1034,7 +1034,7 @@
           "line": 3
         }
       ],
-      "note": "بازه ^1.10.0 در axios به 1.14.7 حل شده.",
+      "note": "The ^1.10.0 range in axios resolves to 1.14.7.",
       "challenges": [
         "transitive",
         "version-range"
@@ -1080,7 +1080,7 @@
           "line": 2
         }
       ],
-      "note": "امضای رسید سفارش.",
+      "note": "Signs the order receipt.",
       "challenges": [],
       "osv_record_count": 3,
       "advisory_ids": [
@@ -1121,7 +1121,7 @@
           "line": 2
         }
       ],
-      "note": "کلاینت دوم checkout.",
+      "note": "Second checkout client.",
       "challenges": [],
       "osv_record_count": 1,
       "advisory_ids": [
@@ -1158,7 +1158,7 @@
           "line": 3
         }
       ],
-      "note": "زمان توکن.",
+      "note": "Token timestamp.",
       "challenges": [],
       "osv_record_count": 2,
       "advisory_ids": [
@@ -1197,7 +1197,7 @@
           "line": 4
         }
       ],
-      "note": "قالب رسید.",
+      "note": "Receipt template.",
       "challenges": [],
       "osv_record_count": 2,
       "advisory_ids": [
@@ -1236,7 +1236,7 @@
           "line": 1
         }
       ],
-      "note": "آسیب‌پذیری ReDoS، نه بدافزار. نباید با 0.7.29 یکی گرفته شود و 1.0.37 سالم است.",
+      "note": "ReDoS vulnerability, not malware. It must stay distinct from 0.7.29, and 1.0.37 is clean.",
       "challenges": [
         "decoy-version",
         "not-malware"
@@ -1276,7 +1276,7 @@
           "line": 3
         }
       ],
-      "note": "خواندن آرشیو صورتحساب.",
+      "note": "Reads a billing archive.",
       "challenges": [],
       "osv_record_count": 18,
       "advisory_ids": [
@@ -1347,7 +1347,7 @@
           "line": 4
         }
       ],
-      "note": "جمع دو عدد داخل سندباکس.",
+      "note": "Adds two numbers inside the sandbox.",
       "challenges": [],
       "osv_record_count": 59,
       "advisory_ids": [
@@ -1500,7 +1500,7 @@
           "line": 6
         }
       ],
-      "note": "کوزه کوکی جلسه صورتحساب.",
+      "note": "Billing session cookie jar.",
       "challenges": [],
       "osv_record_count": 1,
       "advisory_ids": [
@@ -1537,7 +1537,7 @@
           "line": 7
         }
       ],
-      "note": "تجزیه صورت‌حساب XML.",
+      "note": "Parses the billing XML statement.",
       "challenges": [],
       "osv_record_count": 1,
       "advisory_ids": [
@@ -1574,7 +1574,7 @@
           "line": 8
         }
       ],
-      "note": "پیام تسویه.",
+      "note": "Settlement message.",
       "challenges": [],
       "osv_record_count": 12,
       "advisory_ids": [
@@ -1635,7 +1635,7 @@
           "line": 2
         }
       ],
-      "note": "mkdirp خودش سالم است و بازه ^1.2.5 را به نسخه آسیب‌پذیر 1.2.5 حل کرده.",
+      "note": "mkdirp itself is clean and its ^1.2.5 range resolves to the vulnerable 1.2.5 release.",
       "challenges": [
         "transitive",
         "clean-parent",
@@ -1676,7 +1676,7 @@
           "line": 2
         }
       ],
-      "note": "انتخاب نسخه نمونه.",
+      "note": "Picks a sample version.",
       "challenges": [],
       "osv_record_count": 2,
       "advisory_ids": [
@@ -1715,7 +1715,7 @@
           "line": 3
         }
       ],
-      "note": "نرمال‌سازی ایمیل نمونه.",
+      "note": "Normalizes a sample email.",
       "challenges": [],
       "osv_record_count": 4,
       "advisory_ids": [
@@ -1757,7 +1757,7 @@
           "line": 4
         }
       ],
-      "note": "مقایسه نسخه کاتالوگ.",
+      "note": "Compares catalog versions.",
       "challenges": [],
       "osv_record_count": 1,
       "advisory_ids": [
@@ -1794,7 +1794,7 @@
           "line": 5
         }
       ],
-      "note": "شکستن توضیح کالا.",
+      "note": "Wraps the product description.",
       "challenges": [],
       "osv_record_count": 1,
       "advisory_ids": [
@@ -1831,7 +1831,7 @@
           "line": 4
         }
       ],
-      "note": "هم خودش آسیب‌پذیر است هم lodash قدیمی را می‌کشد.",
+      "note": "The package is vulnerable itself and also pulls an old lodash.",
       "challenges": [
         "inner-layer"
       ],
@@ -1872,7 +1872,7 @@
           "line": 5
         }
       ],
-      "note": "در package.json نیست. بازه ^4.17.14 به 4.17.15 حل شده.",
+      "note": "Absent from package.json. The ^4.17.14 range resolves to 4.17.15.",
       "challenges": [
         "transitive",
         "version-range"
@@ -1924,7 +1924,7 @@
           "line": 3
         }
       ],
-      "note": "yargs 15.4.1 سالم است و y18n آسیب‌پذیر را داخل خود دارد.",
+      "note": "yargs 15.4.1 is clean and carries vulnerable y18n inside it.",
       "challenges": [
         "transitive",
         "clean-parent"
@@ -1964,7 +1964,7 @@
           "line": 6
         }
       ],
-      "note": "تشخیص آدرس مخزن.",
+      "note": "Parses a repository URL.",
       "challenges": [],
       "osv_record_count": 1,
       "advisory_ids": [
@@ -2001,7 +2001,7 @@
           "line": 7
         }
       ],
-      "note": "نقل‌قول آرگومان ساخت.",
+      "note": "Quotes build arguments.",
       "challenges": [],
       "osv_record_count": 3,
       "advisory_ids": [
@@ -2042,7 +2042,7 @@
           "line": 8
         }
       ],
-      "note": "بررسی شبکه آزمایشگاه.",
+      "note": "Checks the lab network.",
       "challenges": [],
       "osv_record_count": 2,
       "advisory_ids": [
@@ -2081,7 +2081,7 @@
           "line": 9
         }
       ],
-      "note": "پاک کردن رنگ لاگ.",
+      "note": "Strips log color.",
       "challenges": [],
       "osv_record_count": 1,
       "advisory_ids": [
@@ -2118,7 +2118,7 @@
           "line": 10
         }
       ],
-      "note": "انتخاب ردیف‌های فرد.",
+      "note": "Selects odd rows.",
       "challenges": [],
       "osv_record_count": 1,
       "advisory_ids": [
@@ -2155,7 +2155,7 @@
           "line": 11
         }
       ],
-      "note": "ریشه الگوی فایل.",
+      "note": "Parent of a file pattern.",
       "challenges": [],
       "osv_record_count": 1,
       "advisory_ids": [
@@ -2193,7 +2193,7 @@
           "line": 12
         }
       ],
-      "note": "تطبیق مسیر ساخت.",
+      "note": "Matches a build path.",
       "challenges": [],
       "osv_record_count": 4,
       "advisory_ids": [
@@ -2237,7 +2237,7 @@
           "line": 14
         }
       ],
-      "note": "کلاینت HTTP ingest.",
+      "note": "Ingest HTTP client.",
       "challenges": [
         "inner-layer"
       ],
@@ -2288,7 +2288,7 @@
           "line": 17
         }
       ],
-      "note": "در requirements.txt نیست و قید requests را برآورده می‌کند.",
+      "note": "Absent from requirements.txt and satisfies the requests constraint.",
       "challenges": [
         "transitive",
         "hidden-from-requirements"
@@ -2358,7 +2358,7 @@
           "line": 16
         }
       ],
-      "note": "لایه داخلی requests.",
+      "note": "Inner layer of requests.",
       "challenges": [
         "transitive",
         "hidden-from-requirements"
@@ -2403,7 +2403,7 @@
           "line": 9
         }
       ],
-      "note": "اپ ingest. Jinja2 و Werkzeug را با خودش می‌آورد.",
+      "note": "Ingest app. It brings Jinja2 and Werkzeug with it.",
       "challenges": [
         "inner-layer"
       ],
@@ -2448,7 +2448,7 @@
           "line": 15
         }
       ],
-      "note": "لایه داخلی Flask.",
+      "note": "Inner layer of Flask.",
       "challenges": [
         "transitive"
       ],
@@ -2516,7 +2516,7 @@
           "line": 11
         }
       ],
-      "note": "لایه داخلی Flask.",
+      "note": "Inner layer of Flask.",
       "challenges": [
         "transitive"
       ],
@@ -2570,7 +2570,7 @@
           "line": 5
         }
       ],
-      "note": "خواندن پیکربندی محلی.",
+      "note": "Reads local configuration.",
       "challenges": [],
       "osv_record_count": 2,
       "advisory_ids": [
@@ -2609,7 +2609,7 @@
           "line": 13
         }
       ],
-      "note": "اندازه تصویر رسید.",
+      "note": "Receipt image size.",
       "challenges": [],
       "osv_record_count": 67,
       "advisory_ids": [
@@ -2789,7 +2789,7 @@
           "line": 8
         }
       ],
-      "note": "پاسخ JSON health.",
+      "note": "Health JSON response.",
       "challenges": [],
       "osv_record_count": 45,
       "advisory_ids": [
@@ -2937,7 +2937,7 @@
           "line": 12
         }
       ],
-      "note": "برچسب سفارش XML.",
+      "note": "XML order tag.",
       "challenges": [],
       "osv_record_count": 6,
       "advisory_ids": [
@@ -2982,7 +2982,7 @@
           "line": 10
         }
       ],
-      "note": "هش HEAD مخزن محلی.",
+      "note": "HEAD hash of a local repository.",
       "challenges": [],
       "osv_record_count": 67,
       "advisory_ids": [
@@ -3119,7 +3119,7 @@
           "line": 3
         }
       ],
-      "note": "وضعیت سرویس راه‌دور.",
+      "note": "Remote service status.",
       "challenges": [],
       "osv_record_count": 85,
       "advisory_ids": [
@@ -3282,7 +3282,7 @@
           "line": 6
         }
       ],
-      "note": "مهر کردن عنوان.",
+      "note": "Seals the title.",
       "challenges": [],
       "osv_record_count": 20,
       "advisory_ids": [
@@ -3354,7 +3354,7 @@
           ]
         }
       ],
-      "note": "Log4Shell در ماژول داخلی است، نه در pom ماژول web.",
+      "note": "Log4Shell is in the inner module, not in the web module pom.",
       "challenges": [
         "workspace-transitive",
         "inner-module"
@@ -3411,7 +3411,7 @@
           ]
         }
       ],
-      "note": "API همراه log4j-core در همان ماژول داخلی.",
+      "note": "API jar that accompanies log4j-core in the same inner module.",
       "challenges": [
         "workspace-transitive",
         "inner-module"
@@ -3456,7 +3456,7 @@
           ]
         }
       ],
-      "note": "Text4Shell در legacy-bridge.",
+      "note": "Text4Shell in legacy-bridge.",
       "challenges": [
         "workspace-transitive",
         "inner-module"
@@ -3498,7 +3498,7 @@
           "line": 12
         }
       ],
-      "note": "YAML داخلی پل سفارش.",
+      "note": "YAML inside the order bridge.",
       "challenges": [
         "workspace-transitive",
         "inner-module"
@@ -3555,7 +3555,7 @@
           ]
         }
       ],
-      "note": "کتابخانه قدیمی کالکشن در پل سفارش.",
+      "note": "Old collections library in the order bridge.",
       "challenges": [
         "workspace-transitive",
         "inner-module"
@@ -3602,7 +3602,7 @@
           ]
         }
       ],
-      "note": "سریال‌سازی سفارش در پل داخلی.",
+      "note": "Order serialization in the inner bridge.",
       "challenges": [
         "workspace-transitive",
         "inner-module"
@@ -3744,7 +3744,7 @@
           ]
         }
       ],
-      "note": "XML پل داخلی.",
+      "note": "XML in the inner bridge.",
       "challenges": [
         "workspace-transitive",
         "inner-module"
@@ -3818,7 +3818,7 @@
           "line": 19
         }
       ],
-      "note": "Spring4Shell روی ماژول وب.",
+      "note": "Spring4Shell on the web module.",
       "challenges": [],
       "osv_record_count": 18,
       "advisory_ids": [
@@ -3891,7 +3891,7 @@
           ]
         }
       ],
-      "note": "همان خط نسخه Spring روی beans.",
+      "note": "The same Spring version line on beans.",
       "challenges": [],
       "osv_record_count": 2,
       "advisory_ids": [
@@ -3935,7 +3935,7 @@
           ]
         }
       ],
-      "note": "Netty در ماژول net-edge است و web فقط آن ماژول را وابسته کرده.",
+      "note": "Netty is in the net-edge module, and web only depends on that module.",
       "challenges": [
         "workspace-transitive",
         "inner-module"
@@ -3989,7 +3989,7 @@
           "line": 8
         }
       ],
-      "note": "مسیریاب درگاه.",
+      "note": "Gateway router.",
       "challenges": [],
       "osv_record_count": 5,
       "advisory_ids": [
@@ -4032,7 +4032,7 @@
           "line": 7
         }
       ],
-      "note": "امضای توکن درگاه.",
+      "note": "Gateway token signature.",
       "challenges": [],
       "osv_record_count": 2,
       "advisory_ids": [
@@ -4070,7 +4070,7 @@
           "line": 9
         }
       ],
-      "note": "تجزیه HTML درگاه.",
+      "note": "Gateway HTML parse.",
       "challenges": [],
       "osv_record_count": 28,
       "advisory_ids": [
@@ -4184,7 +4184,7 @@
           "line": 7
         }
       ],
-      "note": "YAML فقط در ماژول legacykit.",
+      "note": "YAML exists only in the legacykit module.",
       "challenges": [
         "workspace-transitive"
       ],
@@ -4232,7 +4232,7 @@
           "line": 5
         }
       ],
-      "note": "برچسب زبان در ماژول داخلی.",
+      "note": "Language tag in the inner module.",
       "challenges": [
         "workspace-transitive"
       ],
@@ -4281,7 +4281,7 @@
           "line": 4
         }
       ],
-      "note": "کلید SSH در ماژول داخلی.",
+      "note": "SSH key parsing in the inner module.",
       "challenges": [
         "workspace-transitive"
       ],
@@ -4394,7 +4394,7 @@
           "line": 2
         }
       ],
-      "note": "تجزیه HTML واردات.",
+      "note": "Import HTML parse.",
       "challenges": [],
       "osv_record_count": 34,
       "advisory_ids": [
@@ -4494,7 +4494,7 @@
           "line": 3
         }
       ],
-      "note": "پاسخ واردات.",
+      "note": "Import response.",
       "challenges": [],
       "osv_record_count": 32,
       "advisory_ids": [
@@ -4593,7 +4593,7 @@
           "line": 4
         }
       ],
-      "note": "منطقه زمانی تهران.",
+      "note": "Tehran time zone.",
       "challenges": [],
       "osv_record_count": 6,
       "advisory_ids": [
@@ -4640,7 +4640,7 @@
           "line": 6
         }
       ],
-      "note": "کلاینت گزارش. psr7 را داخل خود دارد.",
+      "note": "Report client. It carries psr7 inside it.",
       "challenges": [
         "inner-layer"
       ],
@@ -4712,7 +4712,7 @@
           "line": 7
         }
       ],
-      "note": "قید ^1.7 گازل به 1.8.3 حل شده و در composer.json ریشه نیست.",
+      "note": "Guzzle's ^1.7 constraint resolves to 1.8.3, and the package is absent from the root composer.json.",
       "challenges": [
         "transitive"
       ],
@@ -4763,7 +4763,7 @@
           "line": 10
         }
       ],
-      "note": "نوشتن فایل گزارش.",
+      "note": "Writes the report file.",
       "challenges": [],
       "osv_record_count": 2,
       "advisory_ids": [
@@ -4802,7 +4802,7 @@
           "line": 5
         }
       ],
-      "note": "خروجی PDF.",
+      "note": "PDF output.",
       "challenges": [],
       "osv_record_count": 14,
       "advisory_ids": [
@@ -4868,7 +4868,7 @@
           "line": 5
         }
       ],
-      "note": "فقط وابسته بسته داخلی lab/legacy-http است.",
+      "note": "Dependency only of the internal lab/legacy-http package.",
       "challenges": [
         "workspace-transitive"
       ],
@@ -4914,7 +4914,7 @@
           "line": 6
         }
       ],
-      "note": "درخواست HTTP در بسته داخلی.",
+      "note": "HTTP request in the internal package.",
       "challenges": [
         "workspace-transitive"
       ],
@@ -4955,7 +4955,7 @@
           "line": 6
         }
       ],
-      "note": "اعتبار رقم مبلغ.",
+      "note": "Validates an amount made of digits.",
       "challenges": [],
       "osv_record_count": 2,
       "advisory_ids": [
@@ -4993,7 +4993,7 @@
           "line": 12
         }
       ],
-      "note": "شناسه فرایند.",
+      "note": "Process id.",
       "challenges": [],
       "osv_record_count": 3,
       "advisory_ids": [
@@ -5032,7 +5032,7 @@
           "line": 16
         }
       ],
-      "note": "ران‌تایم زمان‌بندی.",
+      "note": "Scheduling runtime.",
       "challenges": [],
       "osv_record_count": 10,
       "advisory_ids": [
@@ -5080,7 +5080,7 @@
           "line": 22
         }
       ],
-      "note": "بافر کدهای کوتاه.",
+      "note": "Buffer for short codes.",
       "challenges": [],
       "osv_record_count": 2,
       "advisory_ids": [
@@ -5125,7 +5125,7 @@
           ]
         }
       ],
-      "note": "لایه پروتکل داخل lab-wire.",
+      "note": "Protocol layer inside lab-wire.",
       "challenges": [
         "workspace-transitive"
       ],
@@ -5177,7 +5177,7 @@
           ]
         }
       ],
-      "note": "پنجره زمانی داخل lab-wire.",
+      "note": "Time window inside lab-wire.",
       "challenges": [
         "workspace-transitive"
       ],
@@ -5196,7 +5196,7 @@
       "version": "1.4.0",
       "purl": "pkg:npm/colors@1.4.0",
       "reason": "decoy",
-      "note": "آخرین نسخه سالم colors قبل از خرابکاری 1.4.1.",
+      "note": "Last clean colors release before the 1.4.1 sabotage.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5206,7 +5206,7 @@
       "version": "4.1.2",
       "purl": "pkg:npm/chalk@4.1.2",
       "reason": "decoy",
-      "note": "بسته رنگ سالم برای ایجاد نویز کنار colors.",
+      "note": "Clean color package that adds noise next to colors.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5216,7 +5216,7 @@
       "version": "4.3.4",
       "purl": "pkg:npm/debug@4.3.4",
       "reason": "decoy",
-      "note": "نسخه بدون گزارش OSV.",
+      "note": "Release with no OSV record.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5226,7 +5226,7 @@
       "version": "4.0.1",
       "purl": "pkg:npm/event-stream@4.0.1",
       "reason": "decoy",
-      "note": "خط 4.x بعد از حادثه flatmap-stream. نباید بدافزار حساب شود.",
+      "note": "4.x line published after the flatmap-stream incident. It must not be treated as malware.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5236,7 +5236,7 @@
       "version": "5.5.3",
       "purl": "pkg:npm/faker@5.5.3",
       "reason": "decoy",
-      "note": "آخرین خط سالم faker قبل از 6.6.6.",
+      "note": "Last clean faker line before 6.6.6.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5246,7 +5246,7 @@
       "version": "1.0.37",
       "purl": "pkg:npm/ua-parser-js@1.0.37",
       "reason": "decoy",
-      "note": "بعد از اصلاح ReDoS. نه بدافزار است نه آسیب‌پذیر در OSV.",
+      "note": "After the ReDoS fix. It is neither malware nor an OSV vulnerability.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5256,7 +5256,7 @@
       "version": "7.0.3",
       "purl": "pkg:npm/cross-env@7.0.3",
       "reason": "decoy",
-      "note": "بسته اصلی. crossenv بدون خط تیره تایپواسکوات است.",
+      "note": "The legitimate package. crossenv, without the hyphen, is the typosquat.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5266,7 +5266,7 @@
       "version": "0.5.5",
       "purl": "pkg:npm/mkdirp@0.5.5",
       "reason": "clean-parent",
-      "note": "خود بسته سالم است؛ minimist زیر آن آسیب‌پذیر است.",
+      "note": "The package itself is clean. minimist underneath it is vulnerable.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5276,7 +5276,7 @@
       "version": "15.4.1",
       "purl": "pkg:npm/yargs@15.4.1",
       "reason": "clean-parent",
-      "note": "خود بسته سالم است؛ y18n زیر آن آسیب‌پذیر است.",
+      "note": "The package itself is clean. y18n underneath it is vulnerable.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5286,7 +5286,7 @@
       "version": "0.4.6",
       "purl": "pkg:pypi/colorama@0.4.6",
       "reason": "decoy",
-      "note": "بسته رنگ قانونی. با نام‌های نزدیک اشتباه گرفته نشود.",
+      "note": "Legitimate color package. Nearby names must not be confused with it.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5296,7 +5296,7 @@
       "version": "2.1.0",
       "purl": "pkg:gem/rest-client@2.1.0",
       "reason": "decoy",
-      "note": "خارج از بازه بکدور 1.6.10 تا 1.6.13 و بدون گزارش OSV.",
+      "note": "Outside the 1.6.10 through 1.6.13 backdoor range, and it has no OSV record.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5306,7 +5306,7 @@
       "version": "1.0.0",
       "purl": "pkg:npm/%40lab/cli-theme@1.0.0",
       "reason": "internal",
-      "note": "کتابخانه خود آزمایشگاه.",
+      "note": "Library that belongs to this lab.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5316,7 +5316,7 @@
       "version": "1.0.0",
       "purl": "pkg:npm/%40lab/payments-core@1.0.0",
       "reason": "internal",
-      "note": "کتابخانه خود آزمایشگاه.",
+      "note": "Library that belongs to this lab.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5326,7 +5326,7 @@
       "version": "1.0.0",
       "purl": "pkg:npm/lab-billing-worker@1.0.0",
       "reason": "internal",
-      "note": "سرویس خود آزمایشگاه.",
+      "note": "Service that belongs to this lab.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5336,7 +5336,7 @@
       "version": "1.0.0",
       "purl": "pkg:npm/lab-build-tools@1.0.0",
       "reason": "internal",
-      "note": "ابزار خود آزمایشگاه.",
+      "note": "Tool that belongs to this lab.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5346,7 +5346,7 @@
       "version": "1.0.0",
       "purl": "pkg:npm/lab-catalog-seed@1.0.0",
       "reason": "internal",
-      "note": "سرویس خود آزمایشگاه.",
+      "note": "Service that belongs to this lab.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5356,7 +5356,7 @@
       "version": "1.0.0",
       "purl": "pkg:npm/lab-checkout-api@1.0.0",
       "reason": "internal",
-      "note": "سرویس خود آزمایشگاه.",
+      "note": "Service that belongs to this lab.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5366,7 +5366,7 @@
       "version": "1.0.0",
       "purl": "pkg:npm/lab-docs-widget@1.0.0",
       "reason": "internal",
-      "note": "سرویس خود آزمایشگاه.",
+      "note": "Service that belongs to this lab.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5376,7 +5376,7 @@
       "version": "1.0.0",
       "purl": "pkg:npm/lab-marketing-site@1.0.0",
       "reason": "internal",
-      "note": "سرویس خود آزمایشگاه.",
+      "note": "Service that belongs to this lab.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5386,7 +5386,7 @@
       "version": "0.1.0",
       "purl": "pkg:pypi/lab-vision@0.1.0",
       "reason": "internal",
-      "note": "کتابخانه خود آزمایشگاه.",
+      "note": "Library that belongs to this lab.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5396,7 +5396,7 @@
       "version": "1.0.0",
       "purl": "pkg:maven/ir.lab.northwind/orders-parent@1.0.0",
       "reason": "internal",
-      "note": "pom والد آزمایشگاه.",
+      "note": "Parent pom of this lab.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5406,7 +5406,7 @@
       "version": "1.0.0",
       "purl": "pkg:maven/ir.lab.northwind/legacy-bridge@1.0.0",
       "reason": "internal",
-      "note": "ماژول داخلی جاوا.",
+      "note": "Internal Java module.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5416,7 +5416,7 @@
       "version": "1.0.0",
       "purl": "pkg:maven/ir.lab.northwind/net-edge@1.0.0",
       "reason": "internal",
-      "note": "ماژول داخلی جاوا.",
+      "note": "Internal Java module.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5426,7 +5426,7 @@
       "version": "1.0.0",
       "purl": "pkg:maven/ir.lab.northwind/web@1.0.0",
       "reason": "internal",
-      "note": "ماژول داخلی جاوا.",
+      "note": "Internal Java module.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5436,7 +5436,7 @@
       "version": "UNKNOWN",
       "purl": "pkg:golang/lab.example/legacykit",
       "reason": "internal",
-      "note": "ماژول داخلی Go. Syft به‌خاطر replace نسخه را UNKNOWN می‌گذارد.",
+      "note": "Internal Go module. Syft records the version as UNKNOWN because of the replace directive.",
       "osv_record_count": null
     },
     {
@@ -5445,7 +5445,7 @@
       "version": "1.0.0",
       "purl": "pkg:composer/lab/legacy-http@1.0.0",
       "reason": "internal",
-      "note": "بسته Composer داخلی.",
+      "note": "Internal Composer package.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5455,7 +5455,7 @@
       "version": "0.1.0",
       "purl": "",
       "reason": "internal",
-      "note": "crate خود آزمایشگاه. Syft برای crate محلی purl نمی‌سازد.",
+      "note": "Crate that belongs to this lab. Syft does not emit a purl for a local crate.",
       "osv_record_count": 0,
       "advisory_ids": []
     },
@@ -5465,7 +5465,7 @@
       "version": "0.1.0",
       "purl": "",
       "reason": "internal",
-      "note": "crate داخلی. بدافزار rustdecimal زیر آن است.",
+      "note": "Internal crate. The rustdecimal malware sits underneath it.",
       "osv_record_count": 0,
       "advisory_ids": []
     }
@@ -5500,7 +5500,7 @@
           "line": 6
         }
       ],
-      "note": "لایه داخلی node-ipc 9.2.2 طبق شرح GHSA-8gr3-2gjw-jj7g. در تاریخ ساخت این آزمایشگاه OSV برای خود peacenotwar شناسه نداشت، پس نیافتن آن خطای MDA نیست و یافتنش امتیاز اضافه است.",
+      "note": "Inner layer of node-ipc 9.2.2, as described by GHSA-8gr3-2gjw-jj7g. When this lab was built, OSV had no id for peacenotwar itself, so missing it is not an MDA false negative and finding it is extra credit.",
       "challenges": [
         "inner-layer",
         "feed-gap"
